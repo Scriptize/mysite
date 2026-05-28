@@ -1,0 +1,22 @@
+{
+  "title": "AWS Software Engineer Intern",
+  "slug": "aws-gcim",
+  "collection": "work",
+  "type": "work",
+  "date": "2025-08-01",
+  "status": "internship",
+  "summary": "Worked on G-CIM, an internal CloudFormation service around GitHub coverage issue tracking, event-driven workflows, and dashboard metrics.",
+  "tags": ["aws", "cloud", "lambda", "step-functions"],
+  "icon": "/images/post-icons/default.svg",
+  "sections": [
+    {
+      "type": "list",
+      "heading": "What I worked on",
+      "items": [
+        "implemented event-driven Step Functions workflows",
+        "used Lambda and EventBridge around coverage issue tracking",
+        "improved metric dashboards for resolved issues across time windows"
+      ]
+    }
+  ]
+}

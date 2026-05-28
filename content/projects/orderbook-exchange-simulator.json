@@ -1,0 +1,30 @@
+{
+  "title": "Rust orderbook / exchange simulator",
+  "slug": "orderbook-exchange-simulator",
+  "collection": "projects",
+  "type": "project",
+  "date": "2026-05-27",
+  "status": "active",
+  "summary": "A Rust limit order book and exchange simulation with actor-driven order flow, pruning, websocket snapshots, and a live UI.",
+  "tags": ["rust", "markets", "systems", "tokio"],
+  "icon": "/images/post-icons/orderbook.svg",
+  "featured": false,
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Why this exists",
+      "body": "I started this as a way to understand order matching, but it turned into a larger question about where behavior should live: the order book, the exchange layer, the actors, or the UI.\n\nThe point is not to pretend this is a production exchange. The point is to use the project as a pressure chamber for Rust, systems design, market structure, and tradeoffs."
+    },
+    {
+      "type": "list",
+      "heading": "What it tracks",
+      "items": [
+        "multiple order types",
+        "exchange events",
+        "actor-generated order flow",
+        "real-time snapshots",
+        "expiration / pruning logic"
+      ]
+    }
+  ]
+}

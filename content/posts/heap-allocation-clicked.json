@@ -1,0 +1,18 @@
+{
+  "title": "What finally made heap allocation click",
+  "slug": "heap-allocation-clicked",
+  "collection": "posts",
+  "type": "post",
+  "date": "2026-05-24",
+  "status": "note",
+  "summary": "A short mental model for stack vs heap allocation and why heap memory exists when the easy lifetime story is not enough.",
+  "tags": ["systems", "memory", "rust"],
+  "icon": "/images/post-icons/default.svg",
+  "sections": [
+    {
+      "type": "text",
+      "heading": "The simple version",
+      "body": "The stack feels simple because the lifetime is tied to the function call. Heap allocation starts making sense when the value needs to survive outside that neat stack frame story, or when its size / ownership pattern does not fit nicely on the stack."
+    }
+  ]
+}

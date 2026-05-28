@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#11110f"/>
+  <path d="M0 225 C90 195 132 218 195 185 C250 158 310 167 400 125 L400 300 L0 300 Z" fill="#1d1a15"/>
+  <circle cx="200" cy="125" r="48" fill="#2a2721"/>
+  <path d="M112 242 C130 190 164 170 200 170 C236 170 270 190 288 242" fill="#2a2721"/>
+  <text x="24" y="42" fill="#5e574c" font-family="monospace" font-size="18">replace /images/profile-placeholder.svg</text>
+  <text x="24" y="270" fill="#dbc78e" font-family="monospace" font-size="16">profile.jpg works too</text>
+</svg>

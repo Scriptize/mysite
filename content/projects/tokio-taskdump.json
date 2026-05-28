@@ -1,0 +1,19 @@
+{
+  "title": "Tokio taskdump notes",
+  "slug": "tokio-taskdump",
+  "collection": "projects",
+  "type": "project",
+  "date": "2026-05-18",
+  "status": "researching",
+  "summary": "Notes around task dumps, instruction pointers, symbolization, stack frames, and what a low-level async debugging API should expose.",
+  "tags": ["rust", "tokio", "async", "debugging"],
+  "icon": "/images/post-icons/tokio.svg",
+  "featured": false,
+  "sections": [
+    {
+      "type": "text",
+      "heading": "What I am trying to understand",
+      "body": "This is a running thread around what a task dump API should return, how much symbolization should happen immediately, and what it means to expose instruction pointers instead of fully resolved names.\n\nIt sits right at the line between practical debugging and lower-level runtime knowledge, which is exactly the kind of thing that makes me keep digging."
+    }
+  ]
+}

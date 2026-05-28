@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Studio</title>
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="site-header">
+        <div>
+          <a href="/" class="site-name">Darren Blaylock</a>
+          <p class="site-line">local writing studio. saves directly into /content, then rebuilds assets/generated-content.js.</p>
+          <div class="route-indicator">studio@local:<span>/studio</span><span class="cursor">_</span></div>
+        </div>
+        <nav class="nav">
+          <a href="/">site</a>
+          <a href="#" id="newPost">new</a>
+          <a href="#" id="rebuild">rebuild</a>
+        </nav>
+      </header>
+      <main id="studioRoot"></main>
+      <footer class="footer">
+        <span>local only</span>
+        <span>save → content/*.json → npm run build → git push</span>
+      </footer>
+    </div>
+    <script src="/studio/client.js"></script>
+  </body>
+</html>

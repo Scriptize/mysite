@@ -1,0 +1,15 @@
+{
+  "name": "darren-local-studio-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "build": "node scripts/build-content.js",
+    "studio": "node studio/server.js",
+    "dev": "node studio/server.js",
+    "preview": "node studio/server.js --public-only"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

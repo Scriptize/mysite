@@ -1,0 +1,62 @@
+{
+  "title": "Why gambling on ROBLOX was fun in 2022",
+  "slug": "robux-rain",
+  "collection": "retrospectives",
+  "type": "retrospective",
+  "date": "2026-05-27",
+  "status": "draft",
+  "summary": "A look back at an old project idea, how it came to life and my favorite takeaways",
+  "tags": [
+    "retro",
+    "old-project",
+    "web"
+  ],
+  "icon": "/images/post-icons/robux-rain.svg",
+  "heroImage": "",
+  "featured": true,
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Background",
+      "body": "In August of 2022, a high school friend on mine named Steven talked about how rich in robux he was back then and how people would use a technique called [sniping](https://www.reddit.com/r/roblox/comments/asx0ez/should_trade_snipers_be_banned/), which is essentailly using a bot for arbitrage of [\"limited\"](https://roblox.fandom.com/wiki/Limited_item) high value cosmetic items on ROBLOX. Around this time I was fresh out of my first engineering internship and was eager to build. The idea of bots and the ROBLOX economy was pretty interesting to me. "
+    },
+    {
+      "type": "text",
+      "heading": "Fast-Forward",
+      "body": "After an elite ball-knowledge lesson from my boy Stevie in ROBLOX exploits and through some due diligence of my own I learned a couple of things:\n\n1. There is a way to get [instant access to ANY ROBLOX account](https://roblox.fandom.com/wiki/.ROBLOSECURITY)\n\n2. There are (were) API endpoints for managing groups in ROBLOX which enabled the payout of robux to several people at a time\n\n3. With an [X-CSRF-Token](https://security.stackexchange.com/questions/154410/how-does-x-csrf-token-work) and a Security Cookie, you can authenticate an account programmatically"
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/robux_rain.png",
+      "alt": "",
+      "caption": "my humble prototype"
+    },
+    {
+      "type": "text",
+      "heading": "Let's Make it Rain",
+      "body": "The idea became clear. What if we could make a Discord bot that interfaced with ROBLOX's API endpoints and payout robux? And so Robux Rain was born."
+    },
+    {
+      "type": "text",
+      "heading": "What about the Gambling???",
+      "body": "Right! So around the time there was (AND IS) a popular site called [Bloxflip.com](https://bloxflip.com/) which I kid you not is a gambling site for robux; make whatever conclusions about the demographic of users you will. Is it illegal? Probably not, its still up as of 10:30 PM 5/27/2026. Is it against ROBLOX TOS? Absolutely. \n\nSo, in the spirit of robux, gambling, and community, I made a spin on the project: What if instead of simply fixed amounts, we made the bot payout a varibale amount from a prizepool in a giveaway style fashion? It makes for both an exciting experience and incentive to gamble to multiply the high amounts already rewarded or grow the pennies leftover. "
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/gambling.png",
+      "alt": "",
+      "caption": "6.5k giveaway, curteousy of Steven"
+    },
+    {
+      "type": "text",
+      "heading": "A quick moment for thoughts",
+      "body": "I decided not to overwhelm this post with code and technical details. That version can exist another time. For now, I wanted this to be more about where the idea came from, what made it exciting, and what it felt like watching people actually use it.\n\nI think the best part of starting any project is the moment your brain switches from “this would be cool” to “wait, this is actually possible.” You start breaking the idea down into smaller pieces: “I just need to figure out this one part,” then the next part, then the next. Eventually, the thing that only existed in your head is on someone else’s screen.\n\nThat was the real takeaway for me. The code mattered, but the best part was seeing my friends enjoy something I brought to life end to end. It reminded me that a project does not have to be serious to be meaningful. Sometimes the fun, chaotic ideas are the ones that teach you the most because you actually care enough to finish them."
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/rewards.png",
+      "alt": "",
+      "caption": "Its raining R$ 🤑"
+    }
+  ]
+}

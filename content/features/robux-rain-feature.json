@@ -1,0 +1,19 @@
+{
+  "title": "Feature: Robux Rain as an artifact",
+  "slug": "robux-rain-feature",
+  "collection": "features",
+  "type": "feature",
+  "date": "2026-05-27",
+  "status": "planned",
+  "summary": "The first feature slot is reserved for a deeper Robux Rain dig-in: code archaeology, old instincts, and what I would rebuild.",
+  "tags": ["feature", "retro", "robux-rain"],
+  "icon": "/images/post-icons/robux-rain.svg",
+  "featured": true,
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Why feature this",
+      "body": "Old projects are useful because they show the shape of your curiosity before your taste catches up. Robux Rain is probably worth writing about because it gives me room to talk about the idea, the code, the mistakes, and the path from then to now."
+    }
+  ]
+}
