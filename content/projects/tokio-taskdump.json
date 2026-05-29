@@ -6,9 +6,16 @@
   "date": "2026-05-18",
   "status": "researching",
   "summary": "Notes around task dumps, instruction pointers, symbolization, stack frames, and what a low-level async debugging API should expose.",
-  "tags": ["rust", "tokio", "async", "debugging"],
+  "tags": [
+    "rust",
+    "tokio",
+    "async",
+    "debugging"
+  ],
   "icon": "/images/post-icons/tokio.svg",
+  "heroImage": "",
   "featured": false,
+  "badge": "draft",
   "sections": [
     {
       "type": "text",

@@ -6,9 +6,16 @@
   "date": "2026-05-27",
   "status": "active",
   "summary": "A Rust limit order book and exchange simulation with actor-driven order flow, pruning, websocket snapshots, and a live UI.",
-  "tags": ["rust", "markets", "systems", "tokio"],
+  "tags": [
+    "rust",
+    "markets",
+    "systems",
+    "tokio"
+  ],
   "icon": "/images/post-icons/orderbook.svg",
+  "heroImage": "",
   "featured": false,
+  "badge": "draft",
   "sections": [
     {
       "type": "text",

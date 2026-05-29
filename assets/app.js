@@ -22,6 +22,17 @@ const COLLECTIONS = {
 const nav = ["posts", "projects", "retrospectives", "features", "thoughts", "work"];
 const content = window.SITE_CONTENT || { collections: {}, all: [] };
 
+const BADGES = {
+  new: "NEW ✨",
+  wip: "WIP ⚙️",
+  draft: "DRAFT 💭",
+};
+
+function renderBadge(badge) {
+  if (!badge || !BADGES[badge]) return "";
+  return `<span class="post-badge">${BADGES[badge]}</span>`;
+}
+
 const $ = (sel, root = document) => root.querySelector(sel);
 const escapeHtml = (value = "") => String(value)
   .replaceAll("&", "&amp;")
@@ -133,7 +144,10 @@ function row(item) {
       <span class="row-path">/${item.collection}/${item.slug}</span>
       <span class="row-main">${escapeHtml(item.title)}</span>
       <span class="row-desc">${escapeHtml(item.summary || "")}</span>
-      <span class="row-meta">${escapeHtml(item.date || item.status || "")}</span>
+      <span class="row-meta">
+        ${renderBadge(item.badge)}
+        <span>${escapeHtml(item.date || item.status || "")}</span>
+      </span>
     </a>
   `;
 }
@@ -238,6 +252,7 @@ function detailPage(item) {
         <h1>${escapeHtml(item.title)}</h1>
         <p>${escapeHtml(item.summary || "")}</p>
         <div class="post-meta">
+          ${renderBadge(item.badge)}
           <span>${escapeHtml(item.date || "")}</span>
           <span>${escapeHtml(item.type || COLLECTIONS[item.collection]?.singular || "post")}</span>
           ${(item.tags || []).map(tag => `<span>#${escapeHtml(tag)}</span>`).join("")}

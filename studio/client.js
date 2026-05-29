@@ -1,4 +1,23 @@
 const collections = ["posts", "projects", "retrospectives", "features", "thoughts", "work"];
+
+const BADGE_OPTIONS = [
+  ["", "none"],
+  ["new", "NEW ✨"],
+  ["wip", "WIP ⚙️"],
+  ["draft", "DRAFT 💭"],
+];
+
+const BADGES = {
+  new: "NEW ✨",
+  wip: "WIP ⚙️",
+  draft: "DRAFT 💭",
+};
+
+function renderBadge(badge) {
+  if (!badge || !BADGES[badge]) return "";
+  return `<span class="post-badge">${BADGES[badge]}</span>`;
+}
+
 let allContent = { collections: {}, all: [] };
 let current = emptyPost();
 
@@ -64,6 +83,7 @@ function emptyPost() {
     icon: "/images/post-icons/default.svg",
     heroImage: "",
     featured: false,
+    badge: "",
     sections: [
       { type: "text", heading: "What I am trying to say", body: "" }
     ]
@@ -184,6 +204,18 @@ function field(label, key, type = "text") {
   return `<label>${label}<input value="${escapeHtml(current[key] || "")}" data-field="${key}" type="${type}" /></label>`;
 }
 
+function badgeSelect() {
+  return `
+    <label>badge
+      <select data-field="badge">
+        ${BADGE_OPTIONS.map(([value, label]) => `
+          <option value="${value}" ${current.badge === value ? "selected" : ""}>${label}</option>
+        `).join("")}
+      </select>
+    </label>
+  `;
+}
+
 function sectionEditor(section, index) {
   const type = section.type || "text";
   const common = `
@@ -250,6 +282,7 @@ function preview() {
         <h1>${escapeHtml(current.title)}</h1>
         <p>${escapeHtml(current.summary || "")}</p>
         <div class="post-meta">
+          ${renderBadge(current.badge)}
           <span>${escapeHtml(current.date || "")}</span>
           <span>${escapeHtml(current.status || "")}</span>
           ${(current.tags || []).map(tag => `<span>#${escapeHtml(tag)}</span>`).join("")}
@@ -284,6 +317,10 @@ function editor() {
           <label>summary<textarea data-field="summary">${escapeHtml(current.summary || "")}</textarea></label>
           <div class="form-row">
             ${field("status", "status")}
+            ${badgeSelect()}
+          </div>
+
+          <div class="form-row">
             ${field("icon path", "icon")}
           </div>
           <label>tags, comma separated<input value="${escapeHtml((current.tags || []).join(", "))}" data-tags /></label>
