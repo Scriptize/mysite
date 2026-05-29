@@ -1,6 +1,6 @@
 const SITE = {
   name: "Scriptize",
-  line: "systems / rust / bots / small interfaces / etc.",
+  line: "systems / rust / bots / thoughts / etc.",
   profileImage: "/images/sitepfp.jpg",
   bio: "I like building things that make my cortisol high but my dopamine higher. bots, systems, weird interfaces, and projects that force me to learn what is actually happening underneath. I’m drawn to Rust, lower-level programming, learning about markets, and seeing people use stuff I worked on.",
   links: [
@@ -189,11 +189,11 @@ function homePage() {
         <p><span>building</span>orderbook / exchange sim</p>
         <p><span>reading</span>thread dumps(?) stack trace unwinding and instruction pointers</p>
         <p><span>writing</span>old project retrospectives</p>
-        <p><span>vibe</span>small interfaces, bots, rust or bust</p>
+        <p><span>vibe</span>ai workshops are so boring</p>
       </div>
     </section>
 
-    ${sectionList("thoughts", "coming soon / 404 energy", thoughts, "thoughts are still buffering")}
+    ${sectionList("thoughts", "coming soon / 404", thoughts, "thoughts incoming")}
     ${sectionList("work", "experience + creds", work, "work section is empty")}
   `);
 }
