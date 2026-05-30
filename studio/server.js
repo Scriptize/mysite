@@ -113,6 +113,7 @@ async function api(req, res, url) {
         icon: item.icon || "/images/post-icons/default.svg",
         heroImage: item.heroImage || "",
         featured: Boolean(item.featured),
+        badge: item.badge || "",
         sections: Array.isArray(item.sections) ? item.sections : []
       };
 

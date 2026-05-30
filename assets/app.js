@@ -1,6 +1,6 @@
 const SITE = {
   name: "Scriptize",
-  line: "systems / rust / bots / small interfaces / etc.",
+  line: "systems / rust / bots / thoughts / etc.",
   profileImage: "/images/sitepfp.jpg",
   bio: "I like building things that make my cortisol high but my dopamine higher. bots, systems, weird interfaces, and projects that force me to learn what is actually happening underneath. I’m drawn to Rust, lower-level programming, learning about markets, and seeing people use stuff I worked on.",
   links: [
@@ -21,6 +21,17 @@ const COLLECTIONS = {
 
 const nav = ["posts", "projects", "retrospectives", "features", "thoughts", "work"];
 const content = window.SITE_CONTENT || { collections: {}, all: [] };
+
+const BADGES = {
+  new: "NEW ✨",
+  wip: "WIP ⚙️",
+  draft: "DRAFT 💭",
+};
+
+function renderBadge(badge) {
+  if (!badge || !BADGES[badge]) return "";
+  return `<span class="post-badge">${BADGES[badge]}</span>`;
+}
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const escapeHtml = (value = "") => String(value)
@@ -133,7 +144,10 @@ function row(item) {
       <span class="row-path">/${item.collection}/${item.slug}</span>
       <span class="row-main">${escapeHtml(item.title)}</span>
       <span class="row-desc">${escapeHtml(item.summary || "")}</span>
-      <span class="row-meta">${escapeHtml(item.date || item.status || "")}</span>
+      <span class="row-meta">
+        ${renderBadge(item.badge)}
+        <span>${escapeHtml(item.date || item.status || "")}</span>
+      </span>
     </a>
   `;
 }
@@ -175,11 +189,11 @@ function homePage() {
         <p><span>building</span>orderbook / exchange sim</p>
         <p><span>reading</span>thread dumps(?) stack trace unwinding and instruction pointers</p>
         <p><span>writing</span>old project retrospectives</p>
-        <p><span>vibe</span>small interfaces, bots, rust or bust</p>
+        <p><span>vibe</span>ai workshops are so boring</p>
       </div>
     </section>
 
-    ${sectionList("thoughts", "coming soon / 404 energy", thoughts, "thoughts are still buffering")}
+    ${sectionList("thoughts", "coming soon / 404", thoughts, "thoughts incoming")}
     ${sectionList("work", "experience + creds", work, "work section is empty")}
   `);
 }
@@ -238,6 +252,7 @@ function detailPage(item) {
         <h1>${escapeHtml(item.title)}</h1>
         <p>${escapeHtml(item.summary || "")}</p>
         <div class="post-meta">
+          ${renderBadge(item.badge)}
           <span>${escapeHtml(item.date || "")}</span>
           <span>${escapeHtml(item.type || COLLECTIONS[item.collection]?.singular || "post")}</span>
           ${(item.tags || []).map(tag => `<span>#${escapeHtml(tag)}</span>`).join("")}

@@ -6,8 +6,15 @@
   "date": "2026-05-24",
   "status": "note",
   "summary": "A short mental model for stack vs heap allocation and why heap memory exists when the easy lifetime story is not enough.",
-  "tags": ["systems", "memory", "rust"],
+  "tags": [
+    "systems",
+    "memory",
+    "rust"
+  ],
   "icon": "/images/post-icons/default.svg",
+  "heroImage": "",
+  "featured": false,
+  "badge": "draft",
   "sections": [
     {
       "type": "text",

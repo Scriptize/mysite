@@ -6,8 +6,13 @@
   "date": "2026-05-27",
   "status": "coming soon",
   "summary": "This section is intentionally unfinished for now. The thoughts are buffering.",
-  "tags": ["soon"],
+  "tags": [
+    "soon"
+  ],
   "icon": "/images/post-icons/default.svg",
+  "heroImage": "",
+  "featured": false,
+  "badge": "",
   "sections": [
     {
       "type": "text",

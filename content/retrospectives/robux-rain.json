@@ -14,16 +14,17 @@
   "icon": "/images/post-icons/robux-rain.svg",
   "heroImage": "",
   "featured": true,
+  "badge": "new",
   "sections": [
     {
       "type": "text",
       "heading": "Background",
-      "body": "In August of 2022, a high school friend on mine named Steven talked about how rich in robux he was back then and how people would use a technique called [sniping](https://www.reddit.com/r/roblox/comments/asx0ez/should_trade_snipers_be_banned/), which is essentially using a bot for arbitrage of [\"limited\"](https://roblox.fandom.com/wiki/Limited_item) high value cosmetic items on ROBLOX. Around this time I was fresh out of my first engineering internship and was eager to build. The idea of bots and the ROBLOX economy was pretty interesting to me. "
+      "body": "In August of 2022, a high school friend of mine named Steven talked about how rich in robux he was back then and how people would use a technique called [sniping](https://www.reddit.com/r/roblox/comments/asx0ez/should_trade_snipers_be_banned/), which is essentailly using a bot for arbitrage of [\"limited\"](https://roblox.fandom.com/wiki/Limited_item) high value cosmetic items on ROBLOX. Around this time I was fresh out of my first engineering internship and was eager to build. The idea of bots and the ROBLOX economy was pretty interesting to me. "
     },
     {
       "type": "text",
       "heading": "Fast-Forward",
-      "body": "After an elite ball-knowledge lesson from my boy Stevie in ROBLOX exploits and through some due diligence of my own I learned a couple of things:\n\n1. There is a way to get [instant access to ANY ROBLOX account](https://roblox.fandom.com/wiki/.ROBLOSECURITY)\n\n2. There are (were) API endpoints for managing groups in ROBLOX which enabled the pay out of robux to several people at a time\n\n3. With an [X-CSRF-Token](https://security.stackexchange.com/questions/154410/how-does-x-csrf-token-work) and a Security Cookie, you can authenticate an account programmatically"
+      "body": "After Stevie dropped some ball knowledge in ROBLOX exploits and I did some due diligence of my own I learned a couple of things:\n\n1. There is a way to get [instant access to ANY ROBLOX account](https://roblox.fandom.com/wiki/.ROBLOSECURITY)\n\n2. There are (were) API endpoints for managing groups in ROBLOX which enabled the payout of robux to several people at a time\n\n3. With an [X-CSRF-Token](https://security.stackexchange.com/questions/154410/how-does-x-csrf-token-work) and a Security Cookie, you can authenticate an account programmatically"
     },
     {
       "type": "image",
