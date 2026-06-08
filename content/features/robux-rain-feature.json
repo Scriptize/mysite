@@ -35,7 +35,7 @@
     {
       "type": "text",
       "heading": "What is Our Bottleneck?",
-      "body": "The way I like to think of how you want to make something faster is immediately asking the question: \"what's the bottleneck?\" And for many of the performance problems we run into, common bottlenecks are CPU and I/O.\n\nMultithreading is good for CPU-bound work as it otptimizes hard work by giving you more workers. On the other hand, async is good for I/O bound work because it optimizes waiting. A good visual is imagining a baker preparing icing while his cake is in the oven. He's able to get work done while waiting for the cake to bake without staring at the oven for an hour and a half for the cake to be ready.  "
+      "body": "The way I like to think of how you want to make something faster is immediately asking the question: \"what's the bottleneck?\" And for many of the performance problems we run into, common bottlenecks are CPU and I/O.\n\nMultithreading is good for CPU-bound work as it optimizes hard work by giving you more workers. On the other hand, async is good for I/O bound work because it optimizes waiting. A good visual is imagining a baker preparing icing while his cake is in the oven. He's able to get work done while waiting for the cake to bake without staring at the oven for an hour and a half for the cake to be ready.  "
     },
     {
       "type": "text",
