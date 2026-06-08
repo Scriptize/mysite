@@ -113,7 +113,7 @@
     {
       "type": "text",
       "heading": "Are You Listening??",
-      "body": "One other subtle issue I noticed in the code was that I registered my listener a bit too late. While we can expect some time to pass between DM and response time, we should never underestimate the eagerness for robux. taking a look at this code: "
+      "body": "One other subtle issue I noticed in the code was that I registered my listener a bit too late. While we can expect some time to pass between DM and response time, we should never underestimate the eagerness for robux. Taking a look at this code: "
     },
     {
       "type": "code",
@@ -140,7 +140,7 @@
     {
       "type": "text",
       "heading": "Nesting",
-      "body": "The DM listener is actually also nested in the same command that starts the giveway which is convenient for capturing giveway-specifc variables from `/start_rain` but the downside is that everytime `/start_rain` runs, I create a new event listener. So if three giveaways are active you now have three `get_reply` functions listening to every DM.\n\nImagine an issue arrising where:\n\n`User sends one DM`\n`Listener for giveaway A sees it`\n`Listener for giveaway B sees it`\n`Listener for giveaway C sees it`\n\nEach listener checks:\n`if event.message.author.id in listen_list:`\n\nAnd maybe only one responds. But if the same user is in multiple active giveways, state cleanup fails, or even worse there are active giveways across different Discord servers, a single DM could trigger multiple handlers which may be catastrophic at scale. A global DM listner would also handle this issue.\n"
+      "body": "The DM listener is actually also nested in the same command that starts the giveway which is convenient for capturing giveway-specifc variables from `/start_rain` but the downside is that everytime `/start_rain` runs, I create a new event listener. So if three giveaways are active you now have three `get_reply` functions listening to every DM.\n\nImagine an issue arising where:\n\n`User sends one DM`\n`Listener for giveaway A sees it`\n`Listener for giveaway B sees it`\n`Listener for giveaway C sees it`\n\nEach listener checks:\n`if event.message.author.id in listen_list:`\n\nAnd maybe only one responds. But if the same user is in multiple active giveways, state cleanup fails, or even worse there are active giveways across different Discord servers, a single DM could trigger multiple handlers which may be catastrophic at scale. A global DM listner would also handle this issue.\n"
     },
     {
       "type": "text",
