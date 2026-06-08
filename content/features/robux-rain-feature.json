@@ -1,25 +1,198 @@
 {
-  "title": "Feature: Robux Rain as an artifact",
+  "title": "Robux Rain: A Lesson in Async Control Flow",
   "slug": "robux-rain-feature",
   "collection": "features",
   "type": "feature",
-  "date": "2026-05-27",
-  "status": "planned",
-  "summary": "The first feature slot is reserved for a deeper Robux Rain dig-in: code archaeology, old instincts, and what I would rebuild.",
+  "date": "2026-06-07",
+  "status": "in-progress",
+  "summary": "This is a more technical reflection of an older project I wrote that involved distributed-systems/backend flaws in miniature scale.",
   "tags": [
-    "feature",
+    "featured",
     "retro",
-    "robux-rain"
+    "async"
   ],
   "icon": "/images/post-icons/robux-rain.svg",
   "heroImage": "",
   "featured": true,
-  "badge": "draft",
+  "badge": "wip",
   "sections": [
     {
       "type": "text",
-      "heading": "Why feature this",
-      "body": "Old projects are useful because they show the shape of your curiosity before your taste catches up. Robux Rain is probably worth writing about because it gives me room to talk about the idea, the code, the mistakes, and the path from then to now."
+      "heading": "Background",
+      "body": "Let's get right into it. A lot of this article will basic Python and asynchronous code, the latter of which is probably more important so it's definitely good to have a good understanding of it. "
+    },
+    {
+      "type": "text",
+      "heading": "Concurrency vs. Parallelism",
+      "body": "Python is a unique language in that by default, the Python runtime can only execute bytecode in one thread at a time due to the [global interpreter lock](https://en.wikipedia.org/wiki/Global_interpreter_lock) (GIL). This meant that [until recently](https://docs.python.org/3/howto/free-threading-python.html), true parallelism, executing code in multliple CPU threads wasn't a possibility.\n\nHowever, as with most other languages, it's possible to write async code, which involves suspending work/tasks on a single thread enabling other work to be done; this is concurrency. It's important to note that these are not in opposition. Sometimes it may be optimal to use both, only one, or neither depending on the scenario  "
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/cpuvsio.png",
+      "alt": "",
+      "caption": ""
+    },
+    {
+      "type": "text",
+      "heading": "What is Our Bottleneck?",
+      "body": "The way I like to think of how you want to make something faster is immediately asking the question: \"what's the bottleneck?\" And for many of the performance problems we run into, common bottlenecks are CPU and I/O.\n\nMultithreading is good for CPU-bound work as it otptimizes hard work by giving you more workers. On the other hand, async is good for I/O bound work because it optimizes waiting. A good visual is imagining a baker preparing icing while his cake is in the oven. He's able to get work done while waiting for the cake to bake without staring at the oven for an hour and a half for the cake to be ready.  "
+    },
+    {
+      "type": "text",
+      "heading": "A look at Hikari",
+      "body": "A lot of functionailty from many Discord bots come from commands. (I prefer the slash flavor.) Hikari takes advantage of [decorators](https://www.w3schools.com/python/python_decorators.asp) in Python to turn functions into commands without modifying the function body. Take a look:"
+    },
+    {
+      "type": "code",
+      "heading": "",
+      "language": "python",
+      "code": "@bot.command()\n@lightbulb.command('version', 'responds with current version')\n@lightbulb.implements(lightbulb.SlashCommand)\nasync def version(ctx):\n    await ctx.respond(\"Robux Rain version: 1.4 **ALPHA**\")"
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "The first decorator registers the function as a command. The second, gives it a name (which may be distinct from the function) and a description of what it does for the Discord UI. The last decorator turns it into a slash command like `/version`."
+    },
+    {
+      "type": "text",
+      "heading": "Good Stuff",
+      "body": "While the code wasn't as clean and as modular as it could be, it was an original idea and the way the code blocks were organized showed a real workflow. There was:\n"
+    },
+    {
+      "type": "list",
+      "heading": "",
+      "items": [
+        "validation/ giveaway data setup",
+        "roblox cookie authentication",
+        "fetch group members",
+        "send giveawy embed",
+        "wait for reactions",
+        "compute winners",
+        "DM users",
+        "listen for replies",
+        "pay out robux"
+      ]
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "there were also signs that I understood state needed to be tracked, varaibles like `listen_list`, `counter`, `payload`, `winner_dict`, `new_recipients` etc. were all pointing toward building a state machine even though I didn't lean into that idea."
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "There was also this cool use of UNIX timestamps that I saw used across Discord that allowed users to refer to a global clock that can be referenced relatively. For example a timestamp corresponding five minutes from now would appear as `5 minutes from now` regardless of timezone. In the code it looked something like:\n\n`\"<t:\"+ str(int((time.mktime(rain_end.timetuple()))))+ \":R>\"`\n\n"
+    },
+    {
+      "type": "text",
+      "heading": "Why Ownership Matters",
+      "body": "Now for the meat and potatoes. The biggest design flaw out of the entire project was these couple of lines: "
+    },
+    {
+      "type": "code",
+      "heading": "",
+      "language": "python",
+      "code": "if window_end < datetime.datetime.now():\n    run = False\n    await event.message.author.send(\"Sorry, claim window is closed\")\n    await message.respond(\"Giveaway Complete!\")\n    bot.unsubscribe(hikari.DMMessageCreateEvent, get_reply)"
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "While there is nothing wrong with a check to see if the giveway is ended, why its cruicial is its position:"
+    },
+    {
+      "type": "code",
+      "heading": "",
+      "language": "python",
+      "code": "    #Listen for responses and add to payload for POST request\n    @bot.listen(hikari.DMMessageCreateEvent)\n    async def get_reply(event): # Listen for reply to dm"
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "The listener that is used for incoming messages owns its OWN timeout. So a check to see if a giveaway ends can only occur after a DM happens. So if the window ends at 5:00 PM, but nobody DMs the bot after 5:00 PM, the bot does not “wake up” and say: \"Window is over. Stop Listening\". It stays subscribed forever. Expiration should be controlled by a seperate task, not by a user dependent incoming message. \n\nA bettter mental model is:\n`Task A: listen for claims`\n`Task B: sleep until claim deadline, then close the session`"
+    },
+    {
+      "type": "text",
+      "heading": "Are You Listening??",
+      "body": "One other subtle issue I noticed in the code was that I registered my listener a bit too late. While we can expect some time to pass between DM and response time, we should never underestimate the eagerness for robux. taking a look at this code: "
+    },
+    {
+      "type": "code",
+      "heading": "",
+      "language": "python",
+      "code": "for user in users:\n    if user.is_bot == False:\n        await user.send('Respond with your **ROBLOX USERNAME ONLY** ')\n        counter += 1\n        listen_list.append(user.id)"
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "I immediatedly noticed right after:"
+    },
+    {
+      "type": "code",
+      "heading": "",
+      "language": "python",
+      "code": "@bot.listen(hikari.DMMessageCreateEvent)\nasync def get_reply(event):"
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "This means that something like this can happen:\n\n`Bot DMs User A`\n`User A replies instantly`\n`Bot is still DMing User B, User C, User D`\n`Listener has not been registered yet`\n`User A's reply is missed`\n\nSo even before we get to payload bugs, theres a race between telling users to respond and srarting to listen for responses. The listener should exist before users are asked to respond, or better, there should be one permanent global DM handler that routes messages to active giveaway sessions."
+    },
+    {
+      "type": "text",
+      "heading": "Nesting",
+      "body": "The DM listener is actually also nested in the same command that starts the giveway which is convenient for capturing giveway-specifc variables from `/start_rain` but the downside is that everytime `/start_rain` runs, I create a new event listener. So if three giveaways are active you now have three `get_reply` functions listening to every DM.\n\nImagine an issue arrising where:\n\n`User sends one DM`\n`Listener for giveaway A sees it`\n`Listener for giveaway B sees it`\n`Listener for giveaway C sees it`\n\nEach listener checks:\n`if event.message.author.id in listen_list:`\n\nAnd maybe only one responds. But if the same user is in multiple active giveways, state cleanup fails, or even worse there are active giveways across different Discord servers, a single DM could trigger multiple handlers which may be catastrophic at scale. A global DM listner would also handle this issue.\n"
+    },
+    {
+      "type": "text",
+      "heading": "A Lesson on Mutable State",
+      "body": "The way payloads were handled allowed for a lot to go wrong. After verifying the user was a winner:\n "
+    },
+    {
+      "type": "code",
+      "heading": "",
+      "language": "python",
+      "code": "new_recipients.append({\n  'recipientId': member_list[event.message.content],\n  'recipientType': 'User',\n  'amount': int(winner_dict[str(event.message.author.id)]) \n})"
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "Later this is ran:"
+    },
+    {
+      "type": "code",
+      "heading": "",
+      "language": "python",
+      "code": "await event.message.author.send(\"Successfully recieved username!\")\nlisten_list.remove(event.message.author.id)\ncounter -= 1\npayload[\"Recipients\"].extend(new_recipients)\npayout = rbx_request(...)\nnew_recipients = []\npayload[\"Recipients\"] = []"
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "Because there is an `await` between bulding the recipient and using/resetting the shared payload state we cna imagine a scenario where two users DM at almost the same time:\n\n`User A appends recipient A to new_recipients`\n`User A awaits send()`\n\n`User B appends recipient B to new_recipients`\n`User B awaits send()`\n\n`User A resumes`\n`payload[\"Recipients\"].extend(new_recipients)`\n\nNow new_recipients might contain both A and B.\n\nThen A pays out both, resets the list, and B resumes later with state that has already changed.\n\nThe core issue is theat variables like `new_recipients`, `payload`, `couunter` and `listen_list` are shared mutable objects used by multiple calls to `get_reply`\n\nOne solution for this that comes to mind is avoiding shared state entirely and builidng  a fresh payload for each claim."
+    },
+    {
+      "type": "text",
+      "heading": "\"Staring At The Oven\"",
+      "body": "You may remember earlier I mentioned that async is great for I/O bound tasks because it optimizes waiting. Can you figure out the problem with this line below?\n\n` payout = rbx_request(\"POST\",f\"https://groups.roblox.com/v1/groups/{message.options.groupid}/payouts\",json=payload)`\n\nAn API call, a perfect candidate for `await`, yielding back control to the runtime is called in a way that blocks the thread! This means that while the bot is waiting on Roblox to respond:"
+    },
+    {
+      "type": "list",
+      "heading": "",
+      "items": [
+        "No other Discord events can be processed",
+        "No other commands can progress",
+        "DM handling can lag",
+        "Timers can drift"
+      ]
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "This does not necessarily corrupt state by itself, but it makes the bot feel inconsistent and can amplify the possibility of race conditions.\n\nHere, external API calls should ideally be awaited using an async HTTP client, or be moved into another task. "
+    },
+    {
+      "type": "text",
+      "heading": "Cookies should NOT be an option",
+      "body": "Here I'll talk about why the `.ROBLOSECURITY` cookie is essentially better account access than a password and why it shouldnt be casually pasted into Discord. \n\n⚙️ TO BE CONTINUED ⚙️ "
     }
   ]
 }

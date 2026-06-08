@@ -36,25 +36,34 @@ function isSafeHref(href = "") {
 
 function inlineText(text = "") {
   const input = String(text);
-  const linkPattern = /\[([^\]]+)\]\(([^)\s]+)\)/g;
+
+  const pattern = /(`[^`]+`)|\[([^\]]+)\]\(([^)\s]+)\)/g;
 
   let output = "";
   let lastIndex = 0;
   let match;
 
-  while ((match = linkPattern.exec(input)) !== null) {
-    const [raw, label, href] = match;
-
+  while ((match = pattern.exec(input)) !== null) {
     output += escapeHtml(input.slice(lastIndex, match.index));
 
-    if (isSafeHref(href)) {
-      const external = /^https?:\/\//.test(href);
-      output += `<a href="${escapeHtml(href)}"${external ? ' target="_blank" rel="noreferrer"' : ""}>${escapeHtml(label)}</a>`;
+    const raw = match[0];
+
+    if (raw.startsWith("`")) {
+      const code = raw.slice(1, -1);
+      output += `<code class="inline-code">${escapeHtml(code)}</code>`;
     } else {
-      output += escapeHtml(raw);
+      const label = match[2];
+      const href = match[3];
+
+      if (isSafeHref(href)) {
+        const external = /^https?:\/\//.test(href);
+        output += `<a href="${escapeHtml(href)}"${external ? ' target="_blank" rel="noreferrer"' : ""}>${escapeHtml(label)}</a>`;
+      } else {
+        output += escapeHtml(raw);
+      }
     }
 
-    lastIndex = linkPattern.lastIndex;
+    lastIndex = pattern.lastIndex;
   }
 
   output += escapeHtml(input.slice(lastIndex));
@@ -85,7 +94,7 @@ function emptyPost() {
     featured: false,
     badge: "",
     sections: [
-      { type: "text", heading: "What I am trying to say", body: "" }
+      { type: "text", heading: "", body: "" }
     ]
   };
 }
@@ -123,12 +132,12 @@ function updateSection(index, key, value) {
 
 function addSection(type) {
   const section = type === "code"
-    ? { type: "code", heading: "Code", language: "rust", code: "" }
+    ? { type: "code", heading: "", language: "rust", code: "" }
     : type === "image"
       ? { type: "image", src: "/images/posts/example.png", alt: "", caption: "" }
       : type === "list"
-        ? { type: "list", heading: "Notes", items: ["first item"] }
-        : { type: "text", heading: "New section", body: "" };
+        ? { type: "list", heading: "", items: ["first item"] }
+        : { type: "text", heading: "", body: "" };
   current.sections.push(section);
   render();
 }
@@ -260,10 +269,10 @@ function sectionEditor(section, index) {
 
 function renderPreviewSection(section) {
   const type = section.type || "text";
-  if (type === "code") return `<section><h2>${escapeHtml(section.heading || "Code")}</h2><pre><code>${escapeHtml(section.code || "")}</code></pre></section>`;
+  if (type === "code") return `<section><h2>${escapeHtml(section.heading || "")}</h2><pre><code>${escapeHtml(section.code || "")}</code></pre></section>`;
   if (type === "image") return `<figure><img src="${escapeHtml(section.src || "")}" alt="${escapeHtml(section.alt || "")}" /><figcaption>${escapeHtml(section.caption || "")}</figcaption></figure>`;
-  if (type === "list") return `<section><h2>${escapeHtml(section.heading || "Notes")}</h2><ul>${(section.items || []).map(x => `<li>${inlineText(x)}</li>`).join("")}</ul></section>`;
-  return `<section><h2>${escapeHtml(section.heading || "Section")}</h2>${paragraphs(section.body || "")}</section>`;
+  if (type === "list") return `<section><h2>${escapeHtml(section.heading || "")}</h2><ul>${(section.items || []).map(x => `<li>${inlineText(x)}</li>`).join("")}</ul></section>`;
+  return `<section><h2>${escapeHtml(section.heading || "")}</h2>${paragraphs(section.body || "")}</section>`;
 }
 
 function paragraphs(text) {

@@ -274,7 +274,7 @@ main { padding: 42px 0; }
 .project-entry dt, .work-entry time { color: var(--faint); }
 .project-entry dd { margin: 0; color: var(--muted); }
 
-.terminal-block, .post-body pre, .studio-output pre {
+.terminal-block, .post-body pre, .studio-output pre, .code-block {
   overflow-x: auto;
   margin: 24px 0;
   padding: 18px 0;
@@ -286,10 +286,129 @@ main { padding: 42px 0; }
   line-height: 1.7;
 }
 
+.inline-code {
+  padding: 1px 5px;
+  border: 1px solid rgba(219, 199, 142, 0.22);
+  background: rgba(219, 199, 142, 0.06);
+  color: var(--accent);
+  font-size: 0.92em;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.code-block code {
+  font: inherit;
+}
+
+/* Prism token colors */
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: var(--faint);
+}
+
+.token.punctuation {
+  color: var(--muted);
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: #d26b57;
+}
+
+.token.boolean,
+.token.number {
+  color: #d8a657;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: #a7c080;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  color: #dbc78e;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: #7fbbb3;
+}
+
+.token.function,
+.token.class-name {
+  color: #e6c384;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  color: #d699b6;
+}
+
+.token.important,
+.token.bold {
+  font-weight: 700;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+.token.decorator,
+.token.annotation {
+  color: #d699b6;
+}
+
+.token.builtin {
+  color: #a7c080;
+}
+
+.token.keyword {
+  color: #7fbbb3;
+  font-weight: 700;
+}
+
+.token.function {
+  color: #e6c384;
+  font-weight: 700;
+}
+
+.token.string {
+  color: #a7c080;
+}
+
+.token.operator {
+  color: #dbc78e;
+}
+
+.token.number,
+.token.boolean {
+  color: #d8a657;
+}
+
+.token.comment {
+  color: var(--faint);
+  font-style: italic;
+}
+
 .work-entry { display: grid; grid-template-columns: 1fr 220px; gap: 24px; }
 .work-entry ul { grid-column: 1 / -1; margin: 0; padding-left: 20px; }
 
-.post-page { max-width: 860px; }
+.post-page { max-width: 1040px; }
 .post-header { padding: 20px 0 34px; border-bottom: 1px solid var(--line); }
 .post-meta { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 24px; color: var(--faint); font-size: 12px; }
 .post-body { max-width: 760px; padding-top: 16px; }
@@ -299,6 +418,53 @@ main { padding: 42px 0; }
 .post-body figure { margin: 30px 0; }
 .post-body figure img { max-width: 100%; border: 1px solid var(--line); display: block; }
 .post-body figcaption { color: var(--faint); margin-top: 9px; font-size: 12px; }
+
+/* add this near your existing post styles */
+
+html {
+  scroll-behavior: smooth;
+}
+
+.post-layout {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 760px);
+  gap: 42px;
+  align-items: start;
+}
+
+.post-toc {
+  position: sticky;
+  top: 28px;
+  padding-top: 16px;
+  color: var(--faint);
+  font-size: 12px;
+}
+
+.post-toc-label {
+  margin-bottom: 18px;
+  color: var(--faint);
+  font-size: 11px;
+  text-transform: lowercase;
+}
+
+.post-toc a {
+  display: block;
+  margin-bottom: 14px;
+  color: var(--faint);
+  line-height: 1.45;
+}
+
+.post-toc a::before {
+  content: "- ";
+}
+
+.post-toc a:hover {
+  color: var(--accent);
+}
+
+.post-section {
+  scroll-margin-top: 36px;
+}
 
 .empty-state {
   border-top: 1px solid var(--line);
@@ -355,6 +521,31 @@ main { padding: 42px 0; }
   .row-icon { margin-bottom: 4px; }
   .hero h1, .page-title h1, .post-header h1 { letter-spacing: -0.055em; }
   .identity-photo { width: 100%; max-width: 420px; }
+
+  /* add this inside your existing @media (max-width: 900px) block */
+
+  .post-layout {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .post-toc {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    padding: 0 0 20px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .post-toc-label {
+    width: 100%;
+    margin-bottom: 4px;
+  }
+
+  .post-toc a {
+    margin: 0;
+  }
 }
 
 .post-body a,

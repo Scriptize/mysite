@@ -33,6 +33,36 @@ function renderBadge(badge) {
   return `<span class="post-badge">${BADGES[badge]}</span>`;
 }
 
+function sectionAnchor(section, index) {
+  const raw = section.heading || `section-${index + 1}`;
+
+  return String(raw)
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+}
+
+function renderPostToc(item) {
+  const sections = (item.sections || []).filter(section => section.heading);
+
+  if (!sections.length) return "";
+
+  return `
+    <aside class="post-toc" aria-label="post sections">
+      <div class="post-toc-label">sections</div>
+      ${sections.map((section, index) => `
+        <a href="#${sectionAnchor(section, index)}">
+          ${escapeHtml(section.heading)}
+        </a>
+      `).join("")}
+    </aside>
+  `;
+}
+
+
+
 const $ = (sel, root = document) => root.querySelector(sel);
 const escapeHtml = (value = "") => String(value)
   .replaceAll("&", "&amp;")
@@ -48,25 +78,34 @@ function isSafeHref(href = "") {
 
 function inlineText(text = "") {
   const input = String(text);
-  const linkPattern = /\[([^\]]+)\]\(([^)\s]+)\)/g;
+
+  const pattern = /(`[^`]+`)|\[([^\]]+)\]\(([^)\s]+)\)/g;
 
   let output = "";
   let lastIndex = 0;
   let match;
 
-  while ((match = linkPattern.exec(input)) !== null) {
-    const [raw, label, href] = match;
-
+  while ((match = pattern.exec(input)) !== null) {
     output += escapeHtml(input.slice(lastIndex, match.index));
 
-    if (isSafeHref(href)) {
-      const external = /^https?:\/\//.test(href);
-      output += `<a href="${escapeHtml(href)}"${external ? ' target="_blank" rel="noreferrer"' : ""}>${escapeHtml(label)}</a>`;
+    const raw = match[0];
+
+    if (raw.startsWith("`")) {
+      const code = raw.slice(1, -1);
+      output += `<code class="inline-code">${escapeHtml(code)}</code>`;
     } else {
-      output += escapeHtml(raw);
+      const label = match[2];
+      const href = match[3];
+
+      if (isSafeHref(href)) {
+        const external = /^https?:\/\//.test(href);
+        output += `<a href="${escapeHtml(href)}"${external ? ' target="_blank" rel="noreferrer"' : ""}>${escapeHtml(label)}</a>`;
+      } else {
+        output += escapeHtml(raw);
+      }
     }
 
-    lastIndex = linkPattern.lastIndex;
+    lastIndex = pattern.lastIndex;
   }
 
   output += escapeHtml(input.slice(lastIndex));
@@ -220,19 +259,52 @@ function collectionPage(collection) {
   `);
 }
 
-function renderSection(section) {
-  const type = section.type || "text";
-  if (type === "code") {
-    return `<section><h2>${escapeHtml(section.heading || "Code")}</h2><pre><code>${escapeHtml(section.code || "")}</code></pre></section>`;
+function renderSection(section, index) {
+  const id = sectionAnchor(section, index);
+
+  if (section.type === "list") {
+    return `
+      <section class="post-section" id="${id}">
+        ${renderHeading(section)}
+        ${section.body ? paragraphs(section.body) : ""}
+        <ul>
+          ${(section.items || []).map(item => `<li>${escapeHtml(item)}</li>`).join("")}
+        </ul>
+      </section>
+    `;
   }
-  if (type === "image") {
-    return `<figure><img src="${escapeHtml(section.src || "")}" alt="${escapeHtml(section.alt || "")}" /><figcaption>${escapeHtml(section.caption || "")}</figcaption></figure>`;
+
+  if (section.type === "code") {
+    const language = section.language || "python";
+
+    return `
+      <section class="post-section" id="${id}">
+        ${renderHeading(section)}
+        ${section.body ? paragraphs(section.body) : ""}
+        <pre class="code-block language-${escapeHtml(language)}"><code class="language-${escapeHtml(language)}">${escapeHtml(section.code || "")}</code></pre>
+      </section>
+    `;
   }
-  if (type === "list") {
-    const items = Array.isArray(section.items) ? section.items : [];
-    return `<section><h2>${escapeHtml(section.heading || "Notes")}</h2><ul>${items.map(item => `<li>${inlineText(item)}</li>`).join("")}</ul></section>`;
+
+  if (section.type === "image") {
+    return `
+      <section class="post-section" id="${id}">
+        ${renderHeading(section)}
+        ${section.body ? paragraphs(section.body) : ""}
+        <figure>
+          <img src="${escapeHtml(section.src || "")}" alt="${escapeHtml(section.alt || "")}" />
+          ${section.caption ? `<figcaption>${escapeHtml(section.caption)}</figcaption>` : ""}
+        </figure>
+      </section>
+    `;
   }
-  return `<section><h2>${escapeHtml(section.heading || "Section")}</h2>${paragraphs(section.body || section.text || "")}</section>`;
+
+  return `
+    <section class="post-section" id="${id}">
+      ${renderHeading(section)}
+      ${section.body ? paragraphs(section.body) : ""}
+    </section>
+  `;
 }
 
 function paragraphs(text) {
@@ -258,8 +330,12 @@ function detailPage(item) {
           ${(item.tags || []).map(tag => `<span>#${escapeHtml(tag)}</span>`).join("")}
         </div>
       </header>
-      <div class="post-body">
-        ${(item.sections || []).map(renderSection).join("")}
+      <div class="post-layout">
+        ${renderPostToc(item)}
+
+        <article class="post-body">
+          ${(item.sections || []).map((section, index) => renderSection(section, index)).join("")}
+        </article>
       </div>
     </article>
   `);
@@ -301,7 +377,16 @@ function render() {
   else html = notFoundPage();
 
   document.getElementById("app").innerHTML = html;
+  if (window.Prism) {
+    window.Prism.highlightAll();
+  }
   if (COLLECTIONS[collection] && !slug) attachSearch(collection);
+}
+
+function renderHeading(section) {
+  return section.heading && section.heading.trim()
+    ? `<h2>${escapeHtml(section.heading)}</h2>`
+    : "";
 }
 
 document.addEventListener("click", (event) => {
