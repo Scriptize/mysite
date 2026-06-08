@@ -19,12 +19,12 @@
     {
       "type": "text",
       "heading": "Background",
-      "body": "Let's get right into it. A lot of this article will basic Python and asynchronous code, the latter of which is probably more important so it's definitely good to have a good understanding of it. "
+      "body": "Let's get right into it. A lot of this article will involve basic Python and asynchronous code, the latter of which is probably more important so it's definitely good to have a good understanding of it. "
     },
     {
       "type": "text",
       "heading": "Concurrency vs. Parallelism",
-      "body": "Python is a unique language in that by default, the Python runtime can only execute bytecode in one thread at a time due to the [global interpreter lock](https://en.wikipedia.org/wiki/Global_interpreter_lock) (GIL). This meant that [until recently](https://docs.python.org/3/howto/free-threading-python.html), true parallelism, executing code in multliple CPU threads wasn't a possibility.\n\nHowever, as with most other languages, it's possible to write async code, which involves suspending work/tasks on a single thread enabling other work to be done; this is concurrency. It's important to note that these are not in opposition. Sometimes it may be optimal to use both, only one, or neither depending on the scenario  "
+      "body": "Python is a unique language in that by default, the Python runtime can only execute bytecode in one thread at a time due to the [global interpreter lock](https://en.wikipedia.org/wiki/Global_interpreter_lock) (GIL). This meant that [until recently](https://docs.python.org/3/howto/free-threading-python.html), true parallelism, executing code in multiple CPU threads wasn't a possibility.\n\nHowever, as with most other languages, it's possible to write async code, which involves suspending work/tasks on a single thread enabling other work to be done; this is concurrency. It's important to note that these are not in opposition. Sometimes it may be optimal to use both, only one, or neither depending on the scenario  "
     },
     {
       "type": "image",
@@ -40,7 +40,7 @@
     {
       "type": "text",
       "heading": "A look at Hikari",
-      "body": "A lot of functionailty from many Discord bots come from commands. (I prefer the slash flavor.) Hikari takes advantage of [decorators](https://www.w3schools.com/python/python_decorators.asp) in Python to turn functions into commands without modifying the function body. Take a look:"
+      "body": "A lot of functionality from many Discord bots come from commands. (I prefer the slash flavor.) Hikari takes advantage of [decorators](https://www.w3schools.com/python/python_decorators.asp) in Python to turn functions into commands without modifying the function body. Take a look:"
     },
     {
       "type": "code",
@@ -65,7 +65,7 @@
         "validation/ giveaway data setup",
         "roblox cookie authentication",
         "fetch group members",
-        "send giveawy embed",
+        "send giveaway embed",
         "wait for reactions",
         "compute winners",
         "DM users",
@@ -76,7 +76,7 @@
     {
       "type": "text",
       "heading": "",
-      "body": "there were also signs that I understood state needed to be tracked, varaibles like `listen_list`, `counter`, `payload`, `winner_dict`, `new_recipients` etc. were all pointing toward building a state machine even though I didn't lean into that idea."
+      "body": "there were also signs that I understood state needed to be tracked, variables like `listen_list`, `counter`, `payload`, `winner_dict`, `new_recipients` etc. were all pointing toward building a state machine even though I didn't lean into that idea."
     },
     {
       "type": "text",
@@ -97,7 +97,7 @@
     {
       "type": "text",
       "heading": "",
-      "body": "While there is nothing wrong with a check to see if the giveway is ended, why its cruicial is its position:"
+      "body": "While there is nothing wrong with a check to see if the giveaway is ended, why its crucial is its position:"
     },
     {
       "type": "code",
@@ -108,7 +108,7 @@
     {
       "type": "text",
       "heading": "",
-      "body": "The listener that is used for incoming messages owns its OWN timeout. So a check to see if a giveaway ends can only occur after a DM happens. So if the window ends at 5:00 PM, but nobody DMs the bot after 5:00 PM, the bot does not “wake up” and say: \"Window is over. Stop Listening\". It stays subscribed forever. Expiration should be controlled by a seperate task, not by a user dependent incoming message. \n\nA bettter mental model is:\n`Task A: listen for claims`\n`Task B: sleep until claim deadline, then close the session`"
+      "body": "The listener that is used for incoming messages owns its OWN timeout. So a check to see if a giveaway ends can only occur after a DM happens. So if the window ends at 5:00 PM, but nobody DMs the bot after 5:00 PM, the bot does not “wake up” and say: \"Window is over. Stop Listening\". It stays subscribed forever. Expiration should be controlled by a separate task, not by a user dependent incoming message. \n\nA bettter mental model is:\n`Task A: listen for claims`\n`Task B: sleep until claim deadline, then close the session`"
     },
     {
       "type": "text",
@@ -124,7 +124,7 @@
     {
       "type": "text",
       "heading": "",
-      "body": "I immediatedly noticed right after:"
+      "body": "I immediately noticed right after:"
     },
     {
       "type": "code",
@@ -135,12 +135,12 @@
     {
       "type": "text",
       "heading": "",
-      "body": "This means that something like this can happen:\n\n`Bot DMs User A`\n`User A replies instantly`\n`Bot is still DMing User B, User C, User D`\n`Listener has not been registered yet`\n`User A's reply is missed`\n\nSo even before we get to payload bugs, theres a race between telling users to respond and srarting to listen for responses. The listener should exist before users are asked to respond, or better, there should be one permanent global DM handler that routes messages to active giveaway sessions."
+      "body": "This means that something like this can happen:\n\n`Bot DMs User A`\n`User A replies instantly`\n`Bot is still DMing User B, User C, User D`\n`Listener has not been registered yet`\n`User A's reply is missed`\n\nSo even before we get to payload bugs, theres a race between telling users to respond and starting to listen for responses. The listener should exist before users are asked to respond, or better, there should be one permanent global DM handler that routes messages to active giveaway sessions."
     },
     {
       "type": "text",
       "heading": "Nesting",
-      "body": "The DM listener is actually also nested in the same command that starts the giveway which is convenient for capturing giveway-specifc variables from `/start_rain` but the downside is that everytime `/start_rain` runs, I create a new event listener. So if three giveaways are active you now have three `get_reply` functions listening to every DM.\n\nImagine an issue arising where:\n\n`User sends one DM`\n`Listener for giveaway A sees it`\n`Listener for giveaway B sees it`\n`Listener for giveaway C sees it`\n\nEach listener checks:\n`if event.message.author.id in listen_list:`\n\nAnd maybe only one responds. But if the same user is in multiple active giveways, state cleanup fails, or even worse there are active giveways across different Discord servers, a single DM could trigger multiple handlers which may be catastrophic at scale. A global DM listner would also handle this issue.\n"
+      "body": "The DM listener is actually also nested in the same command that starts the giveaway which is convenient for capturing giveaway-specifc variables from `/start_rain` but the downside is that everytime `/start_rain` runs, I create a new event listener. So if three giveaways are active you now have three `get_reply` functions listening to every DM.\n\nImagine an issue arising where:\n\n`User sends one DM`\n`Listener for giveaway A sees it`\n`Listener for giveaway B sees it`\n`Listener for giveaway C sees it`\n\nEach listener checks:\n`if event.message.author.id in listen_list:`\n\nAnd maybe only one responds. But if the same user is in multiple active giveaways, state cleanup fails, or even worse there are active giveaways across different Discord servers, a single DM could trigger multiple handlers which may be catastrophic at scale. A global DM listener would also handle this issue.\n"
     },
     {
       "type": "text",
@@ -162,17 +162,17 @@
       "type": "code",
       "heading": "",
       "language": "python",
-      "code": "await event.message.author.send(\"Successfully recieved username!\")\nlisten_list.remove(event.message.author.id)\ncounter -= 1\npayload[\"Recipients\"].extend(new_recipients)\npayout = rbx_request(...)\nnew_recipients = []\npayload[\"Recipients\"] = []"
+      "code": "await event.message.author.send(\"Successfully received username!\")\nlisten_list.remove(event.message.author.id)\ncounter -= 1\npayload[\"Recipients\"].extend(new_recipients)\npayout = rbx_request(...)\nnew_recipients = []\npayload[\"Recipients\"] = []"
     },
     {
       "type": "text",
       "heading": "",
-      "body": "Because there is an `await` between bulding the recipient and using/resetting the shared payload state we cna imagine a scenario where two users DM at almost the same time:\n\n`User A appends recipient A to new_recipients`\n`User A awaits send()`\n\n`User B appends recipient B to new_recipients`\n`User B awaits send()`\n\n`User A resumes`\n`payload[\"Recipients\"].extend(new_recipients)`\n\nNow new_recipients might contain both A and B.\n\nThen A pays out both, resets the list, and B resumes later with state that has already changed.\n\nThe core issue is theat variables like `new_recipients`, `payload`, `couunter` and `listen_list` are shared mutable objects used by multiple calls to `get_reply`\n\nOne solution for this that comes to mind is avoiding shared state entirely and builidng  a fresh payload for each claim."
+      "body": "Because there is an `await` between building the recipient and using/resetting the shared payload state we can imagine a scenario where two users DM at almost the same time:\n\n`User A appends recipient A to new_recipients`\n`User A awaits send()`\n\n`User B appends recipient B to new_recipients`\n`User B awaits send()`\n\n`User A resumes`\n`payload[\"Recipients\"].extend(new_recipients)`\n\nNow new_recipients might contain both A and B.\n\nThen A pays out both, resets the list, and B resumes later with state that has already changed.\n\nThe core issue is that variables like `new_recipients`, `payload`, `counter` and `listen_list` are shared mutable objects used by multiple calls to `get_reply`\n\nOne solution for this that comes to mind is avoiding shared state entirely and building  a fresh payload for each claim."
     },
     {
       "type": "text",
       "heading": "\"Staring At The Oven\"",
-      "body": "You may remember earlier I mentioned that async is great for I/O bound tasks because it optimizes waiting. Can you figure out the problem with this line below?\n\n` payout = rbx_request(\"POST\",f\"https://groups.roblox.com/v1/groups/{message.options.groupid}/payouts\",json=payload)`\n\nAn API call, a perfect candidate for `await`, yielding back control to the runtime is called in a way that blocks the thread! This means that while the bot is waiting on Roblox to respond:"
+      "body": "You may remember earlier I mentioned that async is great for I/O bound tasks because it optimizes waiting. This line is where the earlier CPU-bound vs I/O-bound discussion becomes relevant:\n\n` payout = rbx_request(\"POST\",f\"https://groups.roblox.com/v1/groups/{message.options.groupid}/payouts\",json=payload)`\n\nAn API call, a perfect candidate for `await`, yielding back control to the runtime is called in a way that blocks the thread! This means that while the bot is waiting on Roblox to respond:"
     },
     {
       "type": "list",
