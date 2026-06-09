@@ -419,7 +419,45 @@ main { padding: 42px 0; }
 .post-body figure img { max-width: 100%; border: 1px solid var(--line); display: block; }
 .post-body figcaption { color: var(--faint); margin-top: 9px; font-size: 12px; }
 
-/* add this near your existing post styles */
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.site-shell,
+main,
+.post-page,
+.post-layout,
+.post-body {
+  min-width: 0;
+}
+
+.post-body {
+  width: 100%;
+  max-width: 760px;
+}
+
+.post-body p,
+.post-body li {
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.post-body pre,
+.code-block {
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  white-space: pre;
+  -webkit-overflow-scrolling: touch;
+}
+
+.post-body pre code,
+.code-block code {
+  display: block;
+  min-width: max-content;
+}
 
 html {
   scroll-behavior: smooth;
@@ -545,6 +583,23 @@ html {
 
   .post-toc a {
     margin: 0;
+  }
+  
+  .site-shell {
+    width: min(100% - 28px, 1040px);
+  }
+
+  .post-page {
+    max-width: 100%;
+  }
+
+  .post-body {
+    max-width: 100%;
+  }
+
+  .inline-code {
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 }
 
