@@ -1,0 +1,33 @@
+{
+  "title": "AWS SWE Intern 2026",
+  "slug": "aws-accounts",
+  "collection": "work",
+  "type": "work",
+  "date": "2026-05-04",
+  "status": "internship",
+  "summary": "Worked on internal AWS operations tooling across account investigation, production debugging workflows, and low-level runtime observability. ",
+  "tags": [
+    "aws",
+    "agent-tools",
+    "rust",
+    "open-source"
+  ],
+  "icon": "/images/post-icons/amazon.svg",
+  "heroImage": "",
+  "featured": false,
+  "badge": "new",
+  "sections": [
+    {
+      "type": "list",
+      "heading": "What I worked on",
+      "items": [
+        "integrated account-visibility APIs into ops platform for on-call engineers and AI agents",
+        "converted frequently requested account-investigation workflows into safe, validated CLI tools",
+        "added descriptive command interfaces, input validation, and risk classification around account-data APIs",
+        "reduced the risk of malformed manual requests and standardized production debugging workflows",
+        "implemented a lock-free backtrace capture API for Tokio using libunwind through FFI",
+        "captured raw instruction pointers while deferring symbolization to callers to avoid global-lock contention"
+      ]
+    }
+  ]
+}

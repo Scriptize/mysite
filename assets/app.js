@@ -208,7 +208,7 @@ function homePage() {
   const featured = (content.collections.features || []).slice(0, 3);
   const projects = (content.collections.projects || []).slice(0, 4);
   const thoughts = content.collections.thoughts || [];
-  const work = (content.collections.work || []).slice(0, 2);
+  const work = (content.collections.work || []).slice(0, 4);
 
   return layout(`
     ${identityStrip()}

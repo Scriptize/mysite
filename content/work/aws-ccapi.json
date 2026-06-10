@@ -1,0 +1,31 @@
+{
+  "title": "AWS SWE Intern 2025",
+  "slug": "aws-ccapi",
+  "collection": "work",
+  "type": "work",
+  "date": "2025-06-02",
+  "status": "internship",
+  "summary": "Worked on G-CIM, an internal AWS CloudFormation service used by resource providers to manage GitHub coverage issue operations. ",
+  "tags": [
+    "aws",
+    "cloud",
+    "lambda",
+    "step-functions"
+  ],
+  "icon": "/images/post-icons/amazon.svg",
+  "heroImage": "",
+  "featured": false,
+  "badge": "",
+  "sections": [
+    {
+      "type": "list",
+      "heading": "What I worked on",
+      "items": [
+        "implemented an event-driven Step Functions workflow using AWS Lambda",
+        "paginated coverage issue repositories while reliably tracking issue modifications",
+        "enhanced metrics dashboards for resolved coverage issues by resource",
+        "improved visibility into daily, weekly, and monthly CloudFormation service coverage progress"
+      ]
+    }
+  ]
+}

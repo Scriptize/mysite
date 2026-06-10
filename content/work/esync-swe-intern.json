@@ -1,0 +1,33 @@
+{
+  "title": "Esync Tech SWE Intern",
+  "slug": "esync-swe-intern",
+  "collection": "work",
+  "type": "work",
+  "date": "2023-08-10",
+  "status": "intern",
+  "summary": "Worked on the deployment side of a research-backed anomaly detection project for cybersecurity monitoring. ",
+  "tags": [
+    "dev-ops",
+    "containers",
+    "docker",
+    "azure"
+  ],
+  "icon": "/images/post-icons/default.svg",
+  "heroImage": "",
+  "featured": false,
+  "badge": "",
+  "sections": [
+    {
+      "type": "list",
+      "heading": "What I Worked On",
+      "items": [
+        "containerized an anomalous log-detection model for repeatable deployment and testing",
+        "deployed the containerized service using Microsoft Azure tooling",
+        "supported a research team exploring data breach detection and NLP-based cybersecurity methods",
+        "helped connect model output to system-log monitoring workflows",
+        "worked on making the research prototype easier to run, observe, and iterate on outside a local development environment",
+        "contributed to the final technical presentation explaining the model, deployment flow, and cybersecurity monitoring use case"
+      ]
+    }
+  ]
+}

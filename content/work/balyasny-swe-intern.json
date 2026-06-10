@@ -1,0 +1,33 @@
+{
+  "title": "Balyasny SWE Intern",
+  "slug": "balyasny-swe-intern",
+  "collection": "work",
+  "type": "work",
+  "date": "2022-06-28",
+  "status": "internship",
+  "summary": "Built Python automation for pre-trade compliance workflows around short exposure, ownership data, and EOD trading headroom.",
+  "tags": [
+    "trading-tech",
+    "compliance",
+    "eroupean-shorts",
+    "python"
+  ],
+  "icon": "/images/post-icons/bam.svg",
+  "heroImage": "",
+  "featured": false,
+  "badge": "",
+  "sections": [
+    {
+      "type": "list",
+      "heading": "What I Worked On",
+      "items": [
+        "pulled ownership, position, and holding data from internal databases for short-position review",
+        "built Python scripts to aggregate short exposure by holding threshold and flag accounts needing review",
+        "added real-time API checks for available trading headroom",
+        "generated Flask-based HTML reports for Compliance and EU Trading desks",
+        "automated email delivery of compliance outputs to replace spreadsheet-driven handoffs",
+        "reduced manual review time for European trading desks by roughly 15% by turning the review process into a repeatable data pipeline"
+      ]
+    }
+  ]
+}
