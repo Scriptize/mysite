@@ -11,7 +11,7 @@
     "gba",
     "nds",
     "arm",
-    "emaulation"
+    "emulation"
   ],
   "icon": "/images/post-icons/default.svg",
   "heroImage": "",
@@ -47,7 +47,7 @@
     {
       "type": "text",
       "heading": "",
-      "body": "Most game are organized like:\n`Game` \n├── `Data` \n└── `Logic`\n\nData includes stuff like levels, sprites, music. Logic includes stuff like leveling systems, transformation mechanics, rendering systems.\n\nThe simplest for of ROM hacking is editing existing game data. Many tools have been created to edit such data and many successful project are data-driven projects. The workflow mainly looks like:\n\n`Open tool`\n↓\n`Edit data`\n↓\n`Save ROM`\n↓\n`Test`"
+      "body": "Most game are organized like:\n`Game` \n├── `Data` \n└── `Logic`\n\nData includes stuff like levels, sprites, music. Logic includes stuff like leveling systems, transformation mechanics, rendering systems.\n\nThe simplest form of ROM hacking is editing existing game data. Many tools have been created to edit such data and many successful project are data-driven projects. The workflow mainly looks like:\n\n`Open tool`\n↓\n`Edit data`\n↓\n`Save ROM`\n↓\n`Test`"
     },
     {
       "type": "image",
