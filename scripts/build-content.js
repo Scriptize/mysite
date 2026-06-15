@@ -4,7 +4,7 @@ const path = require("path");
 const ROOT = path.resolve(__dirname, "..");
 const CONTENT_DIR = path.join(ROOT, "content");
 const OUT_FILE = path.join(ROOT, "assets", "generated-content.js");
-const INDEX_FILE = path.join(ROOT, "index.html");
+const INDEX_FILE = path.join(ROOT, "index.template.html");
 
 const COLLECTIONS = ["posts", "projects", "retrospectives", "features", "thoughts", "work"];
 
