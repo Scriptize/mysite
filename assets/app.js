@@ -168,7 +168,7 @@ function identityStrip() {
       <div class="identity-copy">
         <p class="small prompt">~/profile</p>
         <h2>${SITE.name}</h2>
-        <p class="identity-role">"Rust or bust." - someone, somewhere (it sounds tuff)</p>
+        <p class="identity-role">"Rust or bust." - someone, somewhere (it's catchy) </p>
         <p>${SITE.bio}</p>
       </div>
     </section>
