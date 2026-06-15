@@ -8,6 +8,50 @@ const INDEX_FILE = path.join(ROOT, "index.html");
 
 const COLLECTIONS = ["posts", "projects", "retrospectives", "features", "thoughts", "work"];
 
+const SITE_URL = "https://www.blaylock.io";
+
+const DEFAULT_OG = {
+  title: "Darren Blaylock",
+  description: "Projects, thoughts, notes, retrospectives, and work.",
+  image: "/images/site-preview.png",
+  url: SITE_URL
+};
+
+function escapeHtmlAttr(value = "") {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+}
+
+function absoluteUrl(value = "") {
+  if (!value) return SITE_URL;
+  if (/^https?:\/\//.test(value)) return value;
+  return `${SITE_URL}${value.startsWith("/") ? value : `/${value}`}`;
+}
+
+function applyOgTags(html, og) {
+  return html
+    .replaceAll("{{OG_TITLE}}", escapeHtmlAttr(og.title || DEFAULT_OG.title))
+    .replaceAll("{{OG_DESCRIPTION}}", escapeHtmlAttr(og.description || DEFAULT_OG.description))
+    .replaceAll("{{OG_IMAGE}}", escapeHtmlAttr(absoluteUrl(og.image || DEFAULT_OG.image)))
+    .replaceAll("{{OG_URL}}", escapeHtmlAttr(absoluteUrl(og.url || DEFAULT_OG.url)));
+}
+
+function postUrl(item) {
+  return `/${item.collection}/${item.slug}`;
+}
+
+
+function findFirstImage(item) {
+  const imageSection = (item.sections || []).find(section => {
+    return section.type === "image" && section.src;
+  });
+
+  return imageSection?.src || "";
+}
+
 function readJson(filePath) {
   const raw = fs.readFileSync(filePath, "utf8");
   return JSON.parse(raw);
@@ -16,7 +60,7 @@ function readJson(filePath) {
 function normalizeItem(item, collection, fileName) {
   const slugFromFile = fileName.replace(/\.json$/i, "");
 
-  return {
+  const normalized = {
     title: item.title || slugFromFile,
     slug: item.slug || slugFromFile,
     collection,
@@ -30,15 +74,24 @@ function normalizeItem(item, collection, fileName) {
     featured: Boolean(item.featured),
     badge: item.badge || "",
     sections: Array.isArray(item.sections) ? item.sections : []
-};
+  };
+
+  normalized.thumbnail =
+    item.thumbnail ||
+    findFirstImage(normalized) ||
+    "/images/site-preview.png";
+
+  return normalized;
 }
 
 function sortByDateDesc(a, b) {
   return String(b.date || "").localeCompare(String(a.date || ""));
 }
 
-function writeRouteIndex(routePath) {
-  const html = fs.readFileSync(INDEX_FILE, "utf8");
+function writeRouteIndex(routePath, og = DEFAULT_OG) {
+  const baseHtml = fs.readFileSync(INDEX_FILE, "utf8");
+  const html = applyOgTags(baseHtml, og);
+
   const outDir = path.join(ROOT, routePath);
   fs.mkdirSync(outDir, { recursive: true });
   fs.writeFileSync(path.join(outDir, "index.html"), html, "utf8");
@@ -47,6 +100,7 @@ function writeRouteIndex(routePath) {
 function cleanGeneratedRoutes() {
   for (const collection of COLLECTIONS) {
     const routeDir = path.join(ROOT, collection);
+
     if (fs.existsSync(routeDir)) {
       fs.rmSync(routeDir, { recursive: true, force: true });
     }
@@ -88,10 +142,20 @@ function buildContent() {
   cleanGeneratedRoutes();
 
   for (const collection of COLLECTIONS) {
-    writeRouteIndex(collection);
+    writeRouteIndex(collection, {
+      title: `${collection} — Darren Blaylock`,
+      description: `Browse ${collection} on blaylock.io.`,
+      image: DEFAULT_OG.image,
+      url: `/${collection}`
+    });
 
     for (const item of collections[collection] || []) {
-      writeRouteIndex(path.join(collection, item.slug));
+      writeRouteIndex(path.join(collection, item.slug), {
+        title: item.title || DEFAULT_OG.title,
+        description: item.summary || DEFAULT_OG.description,
+        image: item.thumbnail || DEFAULT_OG.image,
+        url: postUrl(item)
+      });
     }
   }
 

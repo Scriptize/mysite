@@ -244,7 +244,7 @@ function collectionPage(collection) {
     projects: ["projects", "current stuff I’m working on.", "Orderbook, Tokio taskdumps, Rust experiments, and anything else alive enough to track."],
     retrospectives: ["retrospectives", "old projects, reread with better taste.", "What was cursed, what was clever, and what I would build differently now."],
     features: ["features", "spotlight posts.", "A few deeper writeups I want people to actually open."],
-    thoughts: ["thoughts", "coming soon.", "This section exists mostly as a promise and a threat."],
+    thoughts: ["thoughts", "miscellaneous stuff/takes", "catch-all for ideas, fragments, opinions, and longer thoughts"],
     work: ["work", "experience and credentials.", "Internships, school, contributions, and proof that the chaos occasionally compiles."]
   }[collection] || [collection, collection, ""];
 
@@ -397,6 +397,35 @@ document.addEventListener("click", (event) => {
   event.preventDefault();
   navigate(url.pathname);
 });
+
+
+function getThumbnailSrc(item) {
+  if (item.thumbnail) return item.thumbnail;
+
+  const firstImage = (item.sections || []).find(section => {
+    return section.type === "image" && section.src;
+  });
+
+  return firstImage?.src || "/images/site-preview.png";
+}
+
+function renderThumbnailCard(item) {
+  const src = getThumbnailSrc(item);
+
+  return `
+    <figure class="post-thumbnail-card">
+      <div class="post-thumbnail-copy">
+        <div class="post-thumbnail-kicker">blaylock.io</div>
+        <h2>${escapeHtml(item.title || "Untitled")}</h2>
+        ${item.summary ? `<p>${escapeHtml(item.summary)}</p>` : ""}
+      </div>
+
+      <div class="post-thumbnail-media">
+        <img src="${escapeHtml(src)}" alt="" />
+      </div>
+    </figure>
+  `;
+}
 
 window.addEventListener("popstate", render);
 render();

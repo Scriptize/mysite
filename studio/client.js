@@ -297,6 +297,8 @@ function preview() {
           ${(current.tags || []).map(tag => `<span>#${escapeHtml(tag)}</span>`).join("")}
         </div>
       </header>
+      <p class="small">thumbnail: ${escapeHtml(getThumbnailSource(current))}</p>
+      ${renderThumbnailCard(current)}
       <div class="post-body">${(current.sections || []).map(renderPreviewSection).join("")}</div>
     </article>
   `;
@@ -429,6 +431,44 @@ document.getElementById("rebuild").addEventListener("click", async (event) => {
   await api("/api/rebuild", { method: "POST" });
   await loadContent();
 });
+
+function getThumbnailSrc(item) {
+  if (item.thumbnail) return item.thumbnail;
+
+  const firstImage = (item.sections || []).find(section => {
+    return section.type === "image" && section.src;
+  });
+
+  return firstImage?.src || "/images/site-preview.png";
+}
+
+function getThumbnailSource(item) {
+  if (item.thumbnail) return "manual thumbnail";
+
+  const firstImage = (item.sections || []).find(section => {
+    return section.type === "image" && section.src;
+  });
+
+  return firstImage?.src ? "first image section" : "default site preview";
+}
+
+function renderThumbnailCard(item) {
+  const src = getThumbnailSrc(item);
+
+  return `
+    <figure class="post-thumbnail-card">
+      <div class="post-thumbnail-copy">
+        <div class="post-thumbnail-kicker">blaylock.io</div>
+        <h2>${escapeHtml(item.title || "Untitled")}</h2>
+        ${item.summary ? `<p>${escapeHtml(item.summary)}</p>` : ""}
+      </div>
+
+      <div class="post-thumbnail-media">
+        <img src="${escapeHtml(src)}" alt="" />
+      </div>
+    </figure>
+  `;
+}
 
 loadContent().catch(err => {
   root.innerHTML = `<p class="empty-state">${escapeHtml(err.message)}</p>`;
