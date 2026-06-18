@@ -50,7 +50,7 @@
     {
       "type": "text",
       "heading": "A look at Hikari",
-      "body": "A lot of functionality from many Discord bots come from commands. (I prefer the slash flavor.) Hikari takes advantage of [decorators](https://www.w3schools.com/python/python_decorators.asp) in Python to turn functions into commands without modifying the function body. Take a look:"
+      "body": "A lot of functionality from many Discord bots come from commands. (I prefer the slash flavor.) [Hikari](https://github.com/hikari-py/hikari), one of many microframeworks for creating Discord bots, takes advantage of [decorators](https://www.w3schools.com/python/python_decorators.asp) in Python to turn functions into commands without modifying the function body. Take a look:"
     },
     {
       "type": "code",
