@@ -45,7 +45,7 @@
     {
       "type": "text",
       "heading": "Why it Matters",
-      "body": "The last two sections are pretty important because when considering Discord bots as well as other applications that request data from some company via some REST API, you begin to realize that more than 70% of of the time your app spends running it spends waiting. \n\nAnd once you begin to ask questions of efficency, you inevitability ask the question, \"how could this process best spend its time waiting?\"\n\nThen the answers become a bit more obvious."
+      "body": "The last two sections are pretty important because when considering Discord bots as well as other applications that request data from some company via some REST API, you begin to realize that more than 70% of the time your app spends running is spent waiting. \n\nAnd once you begin to ask questions of efficency, you inevitability ask the question, \"how could this process best spend its time waiting?\"\n\nThen the answers become a bit more obvious."
     },
     {
       "type": "text",
