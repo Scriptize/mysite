@@ -1,0 +1,26 @@
+{
+  "title": "Take Only What You Need",
+  "slug": "take-only-what-you-need",
+  "collection": "posts",
+  "type": "post",
+  "date": "2026-06-20",
+  "status": "draft",
+  "summary": "How the Nintendo DS handled games 100's of times larger than its 4 MB RAM.",
+  "tags": [
+    "nds",
+    "ram",
+    "memory",
+    "overlays"
+  ],
+  "icon": "/images/post-icons/default.svg",
+  "heroImage": "",
+  "featured": false,
+  "badge": "draft",
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Coming Soon",
+      "body": "Pokémon Black 2 is hundreds of megabytes.\n\nThe Nintendo DS has 4 MB of RAM.\n\nSomehow, that works.\n\nWhy?"
+    }
+  ]
+}
