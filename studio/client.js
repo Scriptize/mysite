@@ -321,7 +321,9 @@ function renderPreviewSection(section) {
 
 function paragraphs(text) {
   return String(text || "")
+    .replace(/\r\n/g, "\n")
     .split(/\n\s*\n/)
+    .map(p => p.trim())
     .filter(Boolean)
     .map(p => `<p>${inlineText(p.replace(/\n+/g, " "))}</p>`)
     .join("");
