@@ -323,7 +323,7 @@ function paragraphs(text) {
   return String(text || "")
     .split(/\n\s*\n/)
     .filter(Boolean)
-    .map(p => `<p>${inlineText(p).replaceAll("\n", "<br />")}</p>`)
+    .map(p => `<p>${inlineText(p.replace(/\n+/g, " "))}</p>`)
     .join("");
 }
 
