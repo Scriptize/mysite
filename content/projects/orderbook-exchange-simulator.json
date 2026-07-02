@@ -74,7 +74,81 @@
     {
       "type": "text",
       "heading": "Skill-Based Matchmaking",
-      "body": "Here I'll talk about the core of the project, the matching engine, and how it was a pain in the ass to write in Rust.\n\n⚙️WIP⚙️"
+      "body": "The matching engine isn't as scary as it sounds. It involves a handful of things and conditions:"
+    },
+    {
+      "type": "list",
+      "heading": "",
+      "items": [
+        "getting best bid",
+        "getting best ask",
+        "stopping when bid < ask",
+        "trading at the resting price",
+        "trading at the lowest quantity",
+        "updating both orders",
+        "removing filled orders",
+        "returning results"
+      ]
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/matching.png",
+      "alt": "",
+      "caption": ""
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "We'll take a look at the code as well because the borrow checker informs the order that operations need to happen in the matching loop."
+    },
+    {
+      "type": "code",
+      "heading": "",
+      "language": "rust",
+      "code": " fn match_orders(&mut self, incoming_side: Side) -> MatchResult {\n        let mut trades = Vec::new();\n        let mut filled_orders = Vec::new();\n\n        loop {\n            if self.bids.is_empty() || self.asks.is_empty() {\n                break;\n            }\n\n            //best prices\n            let bid_price = *self.bids.keys().next_back().unwrap();\n            let ask_price = *self.asks.keys().next().unwrap();\n            \n            if bid_price < ask_price {\n                break;\n            }\n\n            //front of queues \n            let bid_id = self.bids.get(&bid_price).unwrap()[0];\n            let ask_id = self.asks.get(&ask_price).unwrap()[0];\n            "
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "Here's we initalize resulting `trades` and `filled_orders`, which we'll aggregate later to created our `MatchResult`. We start a loop, and we do our common sense checks and get our necessary info.\n\nA big part of Rust's ownership model is it's rules around mutable and immutable references. At any given time you can have any number of immutable references or one mutable reference but not both. Take a look at the following: "
+    },
+    {
+      "type": "code",
+      "heading": "",
+      "language": "rust",
+      "code": "// --- READ ONLY FIRST ---\nlet (bid_remaining, ask_remaining, bid_type, ask_type, bid_actor_id, ask_actor_id);\n{\n  let mut bid = self.orders.get(&bid_id).unwrap();\n  let mut ask = self.orders.get(&ask_id).unwrap();\n\n  bid_remaining = bid.get_remaining_quantity();\n  ask_remaining = ask.get_remaining_quantity();\n\n  bid_type = bid.get_order_type();\n  ask_type = ask.get_order_type();\n\n  bid_actor_id = bid.actor_id;\n  ask_actor_id = ask.actor_id;\n\n}\n    \nlet trade_quantity = bid_remaining.min(ask_remaining);\nif trade_quantity == 0 {\n  break;\n}\n\n// --- APPLY FILLS (separately to avoid borrow conflict) ---\n\nlet mut bid_filled = false;\nlet mut ask_filled = false;\n\n{\n  let bid = self.orders.get_mut(&bid_id).unwrap();\n  bid.fill(trade_quantity).ok();\n  bid_filled = bid.is_filled()\n}\n\n{\n  let ask = self.orders.get_mut(&ask_id).unwrap();\n  ask.fill(trade_quantity).ok();\n  ask_filled = ask.is_filled()\n}"
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "Reads and writes to the orders map happen seperately within thier own scope to ensure both types of references to the don't exist at the same time.\n\nAfter this, we check to see if either order was filled, remove them from the book if they are, and return the results."
+    },
+    {
+      "type": "code",
+      "heading": "",
+      "language": "rust",
+      "code": "if bid_filled {\n  filled_orders.push((bid_id, bid_actor_id));\n  info!(\"Bid Order #{} filled; removing from book...\", bid_id);\n  self.remove_order_from_book(bid_id, bid_price, Side::Buy);\n}\n\nif ask_filled {\n  filled_orders.push((ask_id, ask_actor_id));\n  info!(\"Ask Order #{} filled; removing from book...\", ask_id);\n  self.remove_order_from_book(ask_id, ask_price, Side::Sell);\n}"
+    },
+    {
+      "type": "text",
+      "heading": "Flavors of Limit Order",
+      "body": "While on the topic of matching and orders heres some common order types I decided to cover.\n\n`GoodTilCancel`: Fill what you can, rest the remainder\n\n`FillAndKill`: Fill what you can, cancel the remainder\n\n`FillOrKill`:  Only execute if the full quantity is avaliable\n\n`Market`: Execute immediately against avaliable liquidity\n\nA couple of notes, `FillOrKill` orders exposed a useful optimization boundary. To decide whether an order can fully execute, the engine does not need to inspect every individual resting order. It only needs the aggregate liquidity available at executable price levels. That made per-level data more than a UI convenience: it became part of the matching engine’s validation path.\n\n"
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/FOK.png",
+      "alt": "",
+      "caption": ""
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "Imagine 1000 orders sitting at the same price level. By using our aggregate level data map we can treat that one aggregate quantity isntead of touuching all 1000 orders"
+    },
+    {
+      "type": "text",
+      "heading": "A Body For a Brain",
+      "body": "Here I'll talk about the differences between the orderbook and an exchange and their roles.\n\n⚙️WIP⚙️"
     }
   ]
 }
