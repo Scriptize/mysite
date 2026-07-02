@@ -1,0 +1,74 @@
+{
+  "title": "On Brooklyn:",
+  "slug": "on-brooklyn",
+  "collection": "posts",
+  "type": "post",
+  "date": "2026-07-02",
+  "status": "donzo",
+  "summary": "A reflection on the small spaces that made technology feel reachable, and what it could mean to create more of them.",
+  "tags": [
+    "brooklyn",
+    "nyc",
+    "tech",
+    "retro",
+    "thoughts"
+  ],
+  "icon": "/images/post-icons/default.svg",
+  "heroImage": "",
+  "placements": [
+    "thoughts"
+  ],
+  "featured": false,
+  "badge": "new",
+  "sections": [
+    {
+      "type": "text",
+      "heading": "",
+      "body": "In middle school, every so often our teachers would take us to the computer lab to watch videos on the big monitors or have us complete online assignments.\n\n"
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/bwayjunction.jpg",
+      "alt": "",
+      "caption": "if ur form BK yk where this is"
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "Every opportunity to go to the lab meant a race to the newest and only two computers that ran Windows 10 and were out of the teacher’s line of sight. This meant we could play [Vertix.io](https://krunkerio.fandom.com/wiki/Vertix.io) undetected.\n\n"
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/vertix-kill.gif",
+      "alt": "",
+      "caption": "rip vertix"
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "At the time, I do not think any of us would have described this as an interest in technology. We just wanted the better computer. We wanted the one that loaded faster, ran smoother, and gave us enough freedom to do something other than the assignment in front of us. But looking back, that small race feels more revealing than I realized. Only a handful of us cared enough to sprint for those machines, and most of those same people ended up being some of the most technical people in our class, even if they did not all become engineers.\n\nThat makes me wonder how much early technical curiosity goes unnamed. Maybe some kids do not need to be convinced to like technology. Maybe they are already telling us through the things they run toward: the newer computer, the game that barely works on the school network, the settings menu they are not supposed to touch, the old machine they are willing to troubleshoot just to make something load. Inspect Element is an honorable mention.\n\n"
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/complab.jpg",
+      "alt": "",
+      "caption": ""
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "The question I keep coming back to is what happens when that curiosity has nowhere serious to go. If the only version of technology a kid gets is a locked-down school computer, a half-working lab, or a one-week intro program that disappears as quickly as it arrives, then interest can stay stuck at the level of consumption. You use the machine, but you do not necessarily learn how to shape it.\n\nI think about this when I remember other spaces that gave me small openings into technology: the YMCA computer lab in Bed-Stuy, [SEO’s](https://www.seo-usa.org/scholars/locations/new-york/) tech week, the school computers that were exciting precisely because they were scarce. None of these experiences were perfect pipelines into engineering. Some of them barely looked educational at the time. But they gave me proximity, and proximity matters.\n\nI was educated in Brooklyn my entire life. From East New York, to Flatbush, to Downtown Brooklyn. I've been fortunate and blessed to have the amount of exposure to all the possibilities there are, but if hadn't, I can't imagine how drastically different my prospective could be.\n"
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/bbridge.jpg",
+      "alt": "",
+      "caption": ""
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "Sometime in the future I want to help enable people in Brooklyn to find a space for proximity to thier technical interests. Exposure and access is everything especially today. And honestly, I'm not sure what that will look like, but I'm definitely sure I want to be a part of it."
+    }
+  ]
+}
