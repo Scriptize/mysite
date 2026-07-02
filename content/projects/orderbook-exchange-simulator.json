@@ -16,7 +16,7 @@
   "icon": "/images/post-icons/orderbook.svg",
   "heroImage": "",
   "featured": true,
-  "badge": "draft",
+  "badge": "wip",
   "sections": [
     {
       "type": "text",

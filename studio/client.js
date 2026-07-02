@@ -111,10 +111,23 @@ async function loadContent() {
   render();
 }
 
+function normalizePost(item) {
+  return {
+    ...item,
+    title: item.title || "Untitled",
+    slug: slugify(item.slug || item.title),
+    tags: Array.isArray(item.tags)
+      ? item.tags
+      : String(item.tags || "").split(",").map(x => x.trim()).filter(Boolean),
+    sections: Array.isArray(item.sections) && item.sections.length
+      ? item.sections
+      : [{ type: "text", heading: "", body: "" }],
+    featured: item.featured === true,
+  };
+}
+
 function setCurrent(item) {
-  current = JSON.parse(JSON.stringify(item));
-  current.tags = Array.isArray(current.tags) ? current.tags : [];
-  current.sections = Array.isArray(current.sections) && current.sections.length ? current.sections : [{ type: "text", heading: "Section", body: "" }];
+  current = normalizePost(JSON.parse(JSON.stringify(item)));
   render();
 }
 
@@ -159,15 +172,17 @@ function moveSection(index, direction) {
 async function save() {
   const status = document.getElementById("saveStatus");
   status.textContent = "saving...";
+
   try {
-    const clean = { ...current, slug: slugify(current.slug || current.title) };
-    clean.tags = typeof clean.tags === "string" ? clean.tags.split(",").map(x => x.trim()).filter(Boolean) : clean.tags;
+    const clean = normalizePost(current);
+
     const data = await api("/api/post", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(clean)
     });
-    current = data.item;
+
+    current = normalizePost(data.item);
     status.textContent = `saved ${data.file}`;
     await loadContent();
   } catch (err) {
