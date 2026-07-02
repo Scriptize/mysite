@@ -16,7 +16,8 @@
   "icon": "/images/post-icons/default.svg",
   "heroImage": "",
   "placements": [
-    "thoughts"
+    "thoughts",
+    "posts"
   ],
   "featured": false,
   "badge": "new",
