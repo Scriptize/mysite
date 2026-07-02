@@ -33,6 +33,13 @@ function renderBadge(badge) {
   return `<span class="post-badge">${BADGES[badge]}</span>`;
 }
 
+function getFeaturedItems() {
+  return (content.all || [])
+    .filter(item => item.featured === true)
+    .filter(item => item.status !== "draft")
+    .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+}
+
 function sectionAnchor(section, index) {
   const raw = section.heading || `section-${index + 1}`;
 
@@ -205,11 +212,7 @@ function sectionList(label, title, items, empty = "nothing here yet") {
 
 function homePage() {
   const latest = [...(content.all || [])].filter(x => x.collection !== "work").slice(0, 5);
-  const featured = (content.all || [])
-  .filter(item => item.featured === true)
-  .filter(item => item.status !== "draft")
-  .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
-  .slice(0, 3);
+  const featured = getFeaturedItems().slice(0, 3);
   const projects = (content.collections.projects || []).slice(0, 4);
   const thoughts = content.collections.thoughts || [];
   const work = (content.collections.work || []).slice(0, 4);
@@ -242,7 +245,10 @@ function homePage() {
 }
 
 function collectionPage(collection) {
-  const items = content.collections[collection] || [];
+  const items = collection === "features"
+    ? getFeaturedItems()
+    : content.collections[collection] || [];
+
   const copy = {
     posts: ["posts", "blog posts and notes are the main focus.", "Longer writing, learning notes, and explanations to myself."],
     projects: ["projects", "current stuff I’m working on.", "Orderbook, Tokio taskdumps, Rust experiments, and anything else alive enough to track."],
