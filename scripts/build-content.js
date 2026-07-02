@@ -17,6 +17,13 @@ const DEFAULT_OG = {
   url: SITE_URL
 };
 
+function cleanPlacements(value) {
+  if (!Array.isArray(value)) return [];
+
+  return [...new Set(value)]
+    .filter(collection => COLLECTIONS.includes(collection));
+}
+
 function escapeHtmlAttr(value = "") {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -24,6 +31,8 @@ function escapeHtmlAttr(value = "") {
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;");
 }
+
+
 
 function absoluteUrl(value = "") {
   if (!value) return SITE_URL;
@@ -59,6 +68,13 @@ function readJson(filePath) {
 
 function normalizeItem(item, collection, fileName) {
   const slugFromFile = fileName.replace(/\.json$/i, "");
+  const placements = cleanPlacements(
+    Array.isArray(item.placements)
+      ? item.placements
+      : item.featured
+        ? ["features"]
+        : []
+  );
 
   const normalized = {
     title: item.title || slugFromFile,
@@ -71,7 +87,8 @@ function normalizeItem(item, collection, fileName) {
     tags: Array.isArray(item.tags) ? item.tags : [],
     icon: item.icon || "/images/post-icons/default.svg",
     heroImage: item.heroImage || "",
-    featured: Boolean(item.featured),
+    placements,
+    featured: placements.includes("features"),
     badge: item.badge || "",
     sections: Array.isArray(item.sections) ? item.sections : []
   };
@@ -83,7 +100,6 @@ function normalizeItem(item, collection, fileName) {
 
   return normalized;
 }
-
 function sortByDateDesc(a, b) {
   return String(b.date || "").localeCompare(String(a.date || ""));
 }

@@ -15,14 +15,14 @@
   ],
   "icon": "/images/post-icons/orderbook.svg",
   "heroImage": "",
+  "placements": [
+    "features",
+    "posts",
+    "projects"
+  ],
   "featured": true,
   "badge": "wip",
   "sections": [
-    {
-      "type": "text",
-      "heading": "",
-      "body": ""
-    },
     {
       "type": "text",
       "heading": "Background",

@@ -1,5 +1,5 @@
 const collections = ["posts", "projects", "retrospectives", "features", "thoughts", "work"];
-
+const PLACEMENT_OPTIONS = collections.map(collection => [collection, collection]);
 const BADGE_OPTIONS = [
   ["", "none"],
   ["new", "NEW ✨"],
@@ -91,6 +91,7 @@ function emptyPost() {
     tags: [],
     icon: "/images/post-icons/default.svg",
     heroImage: "",
+    placements: [],
     featured: false,
     badge: "",
     sections: [
@@ -112,6 +113,15 @@ async function loadContent() {
 }
 
 function normalizePost(item) {
+  const rawPlacements = Array.isArray(item.placements)
+    ? item.placements
+    : item.featured
+      ? ["features"]
+      : [];
+
+  const placements = [...new Set(rawPlacements)]
+    .filter(collection => collections.includes(collection));
+
   return {
     ...item,
     title: item.title || "Untitled",
@@ -122,7 +132,8 @@ function normalizePost(item) {
     sections: Array.isArray(item.sections) && item.sections.length
       ? item.sections
       : [{ type: "text", heading: "", body: "" }],
-    featured: item.featured === true,
+    placements,
+    featured: placements.includes("features"),
   };
 }
 
@@ -240,6 +251,24 @@ function badgeSelect() {
   `;
 }
 
+function placementChecklist() {
+  return `
+    <div class="placement-group">
+      <p class="small prompt">appears in</p>
+      ${PLACEMENT_OPTIONS.map(([value, label]) => `
+        <label>
+          <input
+            type="checkbox"
+            data-placement="${value}"
+            ${(current.placements || []).includes(value) ? "checked" : ""}
+          />
+          ${label}
+        </label>
+      `).join("")}
+    </div>
+  `;
+}
+
 function sectionEditor(section, index) {
   const type = section.type || "text";
   const common = `
@@ -350,7 +379,7 @@ function editor() {
             ${field("icon path", "icon")}
           </div>
           <label>tags, comma separated<input value="${escapeHtml((current.tags || []).join(", "))}" data-tags /></label>
-          <label><input type="checkbox" data-featured ${current.featured ? "checked" : ""} /> featured</label>
+          ${placementChecklist()}
 
           <div class="studio-actions">
             <button class="btn" data-add-section="text">+ text</button>
@@ -401,10 +430,18 @@ function bindEvents() {
     render();
   });
 
-  const featured = document.querySelector("[data-featured]");
-  if (featured) featured.addEventListener("change", () => {
-    current.featured = featured.checked;
-    render();
+  document.querySelectorAll("[data-placement]").forEach(input => {
+    input.addEventListener("change", () => {
+      const value = input.dataset.placement;
+      const placements = new Set(current.placements || []);
+
+      if (input.checked) placements.add(value);
+      else placements.delete(value);
+
+      current.placements = [...placements];
+      current.featured = current.placements.includes("features");
+      render();
+    });
   });
 
   document.querySelectorAll("[data-section-field]").forEach(input => {

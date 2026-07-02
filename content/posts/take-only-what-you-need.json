@@ -14,6 +14,10 @@
   ],
   "icon": "/images/post-icons/default.svg",
   "heroImage": "",
+  "placements": [
+    "posts",
+    "thoughts"
+  ],
   "featured": false,
   "badge": "draft",
   "sections": [

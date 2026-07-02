@@ -16,6 +16,11 @@
   ],
   "icon": "/images/post-icons/default.svg",
   "heroImage": "",
+  "placements": [
+    "thoughts",
+    "posts",
+    "features"
+  ],
   "featured": true,
   "badge": "new",
   "sections": [

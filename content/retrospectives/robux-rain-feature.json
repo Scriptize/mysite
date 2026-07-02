@@ -13,6 +13,11 @@
   ],
   "icon": "/images/post-icons/robux-rain.svg",
   "heroImage": "",
+  "placements": [
+    "features",
+    "posts",
+    "retrospectives"
+  ],
   "featured": true,
   "badge": "new",
   "sections": [

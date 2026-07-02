@@ -13,6 +13,9 @@
   ],
   "icon": "/images/post-icons/default.svg",
   "heroImage": "",
+  "placements": [
+    "posts"
+  ],
   "featured": false,
   "badge": "draft",
   "sections": [

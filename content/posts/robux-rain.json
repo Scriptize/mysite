@@ -4,7 +4,7 @@
   "collection": "posts",
   "type": "post",
   "date": "2026-05-27",
-  "status": "draft",
+  "status": "done",
   "summary": "A look back at an old project idea, how it came to life and my favorite takeaways",
   "tags": [
     "retro",
@@ -13,6 +13,11 @@
   ],
   "icon": "/images/post-icons/robux-rain.svg",
   "heroImage": "",
+  "placements": [
+    "retrospectives",
+    "posts",
+    "features"
+  ],
   "featured": true,
   "badge": "new",
   "sections": [

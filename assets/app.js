@@ -33,11 +33,23 @@ function renderBadge(badge) {
   return `<span class="post-badge">${BADGES[badge]}</span>`;
 }
 
-function getFeaturedItems() {
+function isPublicItem(item) {
+  return item.status !== "draft";
+}
+
+function appearsIn(item, section) {
+  return item.collection === section || (item.placements || []).includes(section);
+}
+
+function sectionItems(section) {
   return (content.all || [])
-    .filter(item => item.featured === true)
-    .filter(item => item.status !== "draft")
+    .filter(item => isPublicItem(item))
+    .filter(item => appearsIn(item, section))
     .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+}
+
+function getFeaturedItems() {
+  return sectionItems("features");
 }
 
 function sectionAnchor(section, index) {
@@ -211,11 +223,16 @@ function sectionList(label, title, items, empty = "nothing here yet") {
 }
 
 function homePage() {
-  const latest = [...(content.all || [])].filter(x => x.collection !== "work").slice(0, 5);
-  const featured = getFeaturedItems().slice(0, 3);
-  const projects = (content.collections.projects || []).slice(0, 4);
-  const thoughts = content.collections.thoughts || [];
-  const work = (content.collections.work || []).slice(0, 4);
+  const latest = [...(content.all || [])]
+    .filter(item => isPublicItem(item))
+    .filter(item => item.collection !== "work")
+    .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
+    .slice(0, 5);
+
+  const featured = sectionItems("features").slice(0, 3);
+  const projects = sectionItems("projects").slice(0, 4);
+  const thoughts = sectionItems("thoughts");
+  const work = sectionItems("work").slice(0, 4);
 
   return layout(`
     ${identityStrip()}
@@ -245,10 +262,7 @@ function homePage() {
 }
 
 function collectionPage(collection) {
-  const items = collection === "features"
-    ? getFeaturedItems()
-    : content.collections[collection] || [];
-
+  const items = sectionItems(collection);
   const copy = {
     posts: ["posts", "blog posts and notes are the main focus.", "Longer writing, learning notes, and explanations to myself."],
     projects: ["projects", "current stuff I’m working on.", "Orderbook, Tokio taskdumps, Rust experiments, and anything else alive enough to track."],
@@ -366,11 +380,13 @@ function attachSearch(collection) {
   const input = $("#search");
   const listing = $("#listing");
   if (!input || !listing) return;
+
   input.addEventListener("input", () => {
     const q = input.value.toLowerCase();
-    const items = (content.collections[collection] || []).filter(item => {
+    const items = sectionItems(collection).filter(item => {
       return [item.title, item.summary, item.slug, ...(item.tags || [])].join(" ").toLowerCase().includes(q);
     });
+
     listing.innerHTML = items.length ? items.map(row).join("") : `<div class="empty-state">no matches</div>`;
   });
 }

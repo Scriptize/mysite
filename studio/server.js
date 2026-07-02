@@ -59,6 +59,13 @@ function safeCollection(collection) {
   return collection;
 }
 
+function cleanPlacements(value) {
+  if (!Array.isArray(value)) return [];
+
+  return [...new Set(value)]
+    .filter(collection => COLLECTIONS.includes(collection));
+}
+
 function itemPath(collection, slug) {
   collection = safeCollection(collection);
   slug = slugify(slug);
@@ -101,6 +108,13 @@ async function api(req, res, url) {
       const item = JSON.parse(raw);
       const collection = safeCollection(item.collection);
       const slug = slugify(item.slug || item.title);
+      const placements = cleanPlacements(
+        Array.isArray(item.placements)
+          ? item.placements
+          : item.featured
+            ? ["features"]
+            : []
+      );
       const clean = {
         title: item.title || "Untitled",
         slug,
@@ -112,7 +126,8 @@ async function api(req, res, url) {
         tags: Array.isArray(item.tags) ? item.tags : [],
         icon: item.icon || "/images/post-icons/default.svg",
         heroImage: item.heroImage || "",
-        featured: Boolean(item.featured),
+        placements,
+        featured: placements.includes("features"),
         badge: item.badge || "",
         sections: Array.isArray(item.sections) ? item.sections : []
       };
