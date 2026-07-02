@@ -143,7 +143,7 @@
     {
       "type": "text",
       "heading": "",
-      "body": "Imagine 1,000 orders sitting at the same price level. A naive can_fully_fill implementation could walk every order at that level and sum the remaining quantity one by one. But if the book already maintains aggregate level data, the engine can treat that entire level as one number.\n\nThat made per-level data more than a UI convenience. It became part of the matching engine’s validation path."
+      "body": "Imagine 1,000 orders sitting at the same price level. A naive `can_fully_fill` implementation could walk every order at that level and sum the remaining quantity one by one. But if the book already maintains aggregate level data, the engine can treat that entire level as one number.\n\nThat made per-level data more than a UI convenience. It became part of the matching engine’s validation path."
     },
     {
       "type": "text",
