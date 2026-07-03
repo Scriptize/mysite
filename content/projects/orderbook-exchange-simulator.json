@@ -148,7 +148,77 @@
     {
       "type": "text",
       "heading": "A Body For a Brain",
-      "body": "Here I'll talk about the differences between the orderbook and an exchange and their roles.\n\n⚙️WIP⚙️"
+      "body": "TThe orderbook is the brain of the system: it knows how to store orders, match them, and preserve price-time priority. But an exchange needs more than a brain. It needs a body around it: something that receives commands, assigns order IDs, validates requests, emits events, and exposes the book to the outside world.\n\n"
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/exchange.png",
+      "alt": "",
+      "caption": ""
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "In this project, the `Exchange` owns the `Orderbook` and serves as the public interface into it. Instead of having external code reach directly into the book and mutate bids, asks, or order queues, the exchange exposes a smaller command surface:"
+    },
+    {
+      "type": "list",
+      "heading": "",
+      "items": [
+        "create a new order",
+        "cancel an order",
+        "modify an order",
+        "generate snapshots",
+        "emit events describing what happened"
+      ]
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "That boundary matters because clients should send intent, not implementation details. A UI, simulation, or server task should not need to know how the orderbook stores price levels or where an order lives in a queue. It should be able to say, “submit this order” or “cancel this order,” and let the exchange translate that into the correct book operation.\n\n"
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/nyse.jpg",
+      "alt": "",
+      "caption": ""
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "The exchange also owns information that does not belong in the orderbook itself. For example, the book does not need to know how order IDs are assigned. It only needs a valid order ID once an order reaches it. The exchange can handle that identity layer, call into the book, and then turn the result into events like `OrderAccepted`, `TradeExecuted`, `OrderRemoved`, or `Snapshot`.\n\nThat made the exchange layer more than a thin wrapper. It became the boundary between internal state and external behavior."
+    },
+    {
+      "type": "text",
+      "heading": "When the Wrong Layer Owns Time",
+      "body": "One problem that made this boundary clearer was order pruning.\n\nMy first approach tried to make pruning a [responsibility of the orderbook itself](https://github.com/Scriptize/Orderbook/commit/7e372e3f9f19a451047ff62f0eb1f161241743c4). Since `GoodForDay` orders eventually need to expire, I started thinking of the book as something that should manage its own background cleanup. That pushed me toward synchronization primitives around the book and even around individual orders. At one point, the design involved an [inner/outer orderbook locking pattern](https://github.com/Scriptize/Orderbook/commit/22f6cc4085b967d6ab14fbe114de624726085d3c) using `Arc<Mutex<...>>`\n\n"
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/locklocklock.png",
+      "alt": "",
+      "caption": "this is all so silly in retrospect 😹"
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "That made cross-thread access possible, but it pushed too much complexity into the orderbook. Simple operations now had to think about locking, shared ownership, and thread coordination. The matching logic became harder to reason about, not because matching changed, but because the book was being asked to manage a scheduling problem.\n\nThe cleaner realization was that pruning is not an orderbook concern. The orderbook should know how to remove an order correctly, but it should not own a background thread or decide when time-based cleanup runs. Expiration is exchange/server policy; removal is orderbook mechanics.\n\n"
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/wabbit.png",
+      "alt": "",
+      "caption": "now watch as your GFDs disappear!"
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "A better design is for a server-level task to track time, send expired-order requests through the exchange, and let the orderbook perform removals through its normal command path. Here's [the commit](https://github.com/Scriptize/Orderbook/commit/ff3c07e9f2f42202b8c8c05cce268945786bd262) that does that, almost a year after [pruning was introduced!](https://github.com/Scriptize/Orderbook/commit/aa4efbf185fe477b1f2616139cd45f8d37be7ece)\n\nThis avoided pushing Arc<Mutex<...>> through the entire book and kept the matching engine simple: given a valid operation, mutate state and return the result. The lesson was that synchronization can solve access, but it can also reveal a boundary problem. In this case, the orderbook did not need more locks. It needed to own less."
+    },
+    {
+      "type": "text",
+      "heading": "Events Tell the Story, Snapshots Tell the Truth",
+      "body": "Here I'll talk about the server and the UI and how snaphots, websockets, and tasks really helped to visually bring the exchange to life.\n\n⚙️WIP⚙️\n"
     }
   ]
 }
