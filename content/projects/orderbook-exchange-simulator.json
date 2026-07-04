@@ -58,7 +58,7 @@
     {
       "type": "text",
       "heading": "Core Data Structures",
-      "body": "Bids and asks are represented using `BTreeMap<Price, Vec<OrderId>>`where each price level maps to a queue of order IDs resting at that price.\n\nThis choice fits the shape of an orderbook. Prices are not just values to look up; they form a sorted ladder. The engine constantly needs to ask questions like: what is the highest bid, what is the lowest ask, and which price levels are executable for this incoming order?\n\nA regular `HashMap` would make exact price lookups easy, but it would not preserve order. To find the best bid or ask, the engine would have to scan through all price levels. A BTreeMap keeps prices sorted, so the book can efficiently access the lowest ask and highest bid without searching through every level.\n\nThere is also an interesting memory-layout reason this structure is appealing. A traditional binary search tree stores one key per node, which can lead to lots of heap allocations and pointer chasing. Rust’s BTreeMap stores multiple keys per node, which better matches how modern CPUs like to read memory: in contiguous chunks. In practice, that means a B-tree can trade a few extra comparisons inside a node for fewer cache misses and better locality."
+      "body": "Bids and asks are represented using `BTreeMap<Price, Vec<OrderId>>`where each price level maps to a queue of order IDs resting at that price.\n\nThis choice fits the shape of an orderbook. Prices are not just values to look up; they form a sorted ladder. The engine constantly needs to ask questions like: what is the highest bid, what is the lowest ask, and which price levels are executable for this incoming order?\n\nA regular `HashMap` would make exact price lookups easy, but it would not preserve order. To find the best bid or ask, the engine would have to scan through all price levels. A `BTreeMap` keeps prices sorted, so the book can efficiently access the lowest ask and highest bid without searching through every level.\n\nThere is also an interesting memory-layout reason this structure is appealing. A traditional binary search tree stores one key per node, which can lead to lots of heap allocations and pointer chasing. Rust’s BTreeMap stores multiple keys per node, which better matches how modern CPUs like to read memory: in contiguous chunks. In practice, that means a B-tree can trade a few extra comparisons inside a node for fewer cache misses and better locality."
     },
     {
       "type": "image",
@@ -69,11 +69,11 @@
     {
       "type": "text",
       "heading": "",
-      "body": "And so the idea is that the bids and the asks hold keys to sorted price levels that map to a queues. This lets best prices and by extension best bids/asks get accessed in constant time on average. \n\nThe actual orders are represented with `HashMap<OrderId, Order>`. This is the source of truth for order information such as price, quantity and side (buy/sell)\n\nWe also have an order index, `HashMap<OrderId, OrderEntry>`, which allows us to access orders in the bid/ask maps in constant time for modification and deletion. \n\nThere's a tradeoff to be noted here; in some implementations, the order queue is a doubly linked list which aids in retaining the queue order after deletion. However for the sake of simplicity, and optimization benefits described before, we opt for a dynamic array, even though we end up with worse case O(n) deletions because of left shifting of the array.\n\nFianlly we have another map, `HashMap<Price, LevelData>` which gives aggregated information about a price level. This tells you the total quantity and orders at a current level, which is useful for specific order types I'll talk about later."
+      "body": "Orders themselves are stored separately in a `HashMap<OrderId, Order>`, while an additional index, `HashMap<OrderId, OrderEntry>`, provides constant-time access to an order's position within the book for modification and cancellation. Rather than relying on a single data structure, the engine maintains multiple views of the same state, each optimized for a different access pattern.\n\nWithin each price level, orders are stored in a dynamic array rather than a doubly linked list. This sacrifices worst-case `O(n)` deletions in favor of a simpler implementation and the cache locality benefits discussed earlier.\n\nFinally, `HashMap<Price, LevelData>` stores aggregate information such as the total quantity and order count at each price level. This avoids repeatedly scanning an entire queue and becomes useful for certain order types discussed later."
     },
     {
       "type": "text",
-      "heading": "Skill-Based Matchmaking",
+      "heading": "The Matching Loop",
       "body": "The matching engine is less mysterious than it sounds. At its core, it repeatedly compares the best bid and best ask. If the highest buyer is willing to pay at least as much as the lowest seller is asking, a trade can happen.\n\nEach iteration does a small number of things:"
     },
     {
@@ -132,7 +132,7 @@
     {
       "type": "text",
       "heading": "Flavors of Limit Order",
-      "body": "While on the topic of matching and orders heres some common order types I decided to cover.\n\n`GoodTilCancel`: Fill what you can, rest the remainder\n\n`FillAndKill`: Fill what you can, cancel the remainder\n\n`FillOrKill`:  Only execute if the full quantity is avaliable\n\n`Market`: Execute immediately against avaliable liquidity\n\nFillOrKill exposed a useful optimization boundary. To decide whether an order can fully execute, the engine does not need to inspect every individual resting order. It only needs to know whether there is enough aggregate liquidity across executable price levels.\n\n"
+      "body": "While on the topic of matching and orders heres some common order types I decided to cover.\n\n`GoodTilCancel`: Fill what you can, rest the remainder\n\n`FillAndKill`: Fill what you can, cancel the remainder\n\n`FillOrKill`:  Only execute if the full quantity is avaliable\n\n`Market`: Execute immediately against avaliable liquidity\n\n`FillOrKill` exposed a useful optimization boundary. To decide whether an order can fully execute, the engine does not need to inspect every individual resting order. It only needs to know whether there is enough aggregate liquidity across executable price levels.\n\n"
     },
     {
       "type": "image",
@@ -213,12 +213,50 @@
     {
       "type": "text",
       "heading": "",
-      "body": "A better design is for a server-level task to track time, send expired-order requests through the exchange, and let the orderbook perform removals through its normal command path. Here's [the commit](https://github.com/Scriptize/Orderbook/commit/ff3c07e9f2f42202b8c8c05cce268945786bd262) that does that, almost a year after [pruning was introduced!](https://github.com/Scriptize/Orderbook/commit/aa4efbf185fe477b1f2616139cd45f8d37be7ece)\n\nThis avoided pushing Arc<Mutex<...>> through the entire book and kept the matching engine simple: given a valid operation, mutate state and return the result. The lesson was that synchronization can solve access, but it can also reveal a boundary problem. In this case, the orderbook did not need more locks. It needed to own less."
+      "body": "A better design is for a server-level task to track time, send expired-order requests through the exchange, and let the orderbook perform removals through its normal command path. Here's [the commit](https://github.com/Scriptize/Orderbook/commit/ff3c07e9f2f42202b8c8c05cce268945786bd262) that does that, almost a year after [pruning was introduced!](https://github.com/Scriptize/Orderbook/commit/aa4efbf185fe477b1f2616139cd45f8d37be7ece)\n\nThis avoided pushing `Arc<Mutex<...>>` through the entire book and kept the matching engine simple: given a valid operation, mutate state and return the result. The lesson was that synchronization can solve access, but it can also reveal a boundary problem. In this case, the orderbook did not need more locks. It needed to own less."
     },
     {
       "type": "text",
-      "heading": "Events Tell the Story, Snapshots Tell the Truth",
-      "body": "Here I'll talk about the server and the UI and how snaphots, websockets, and tasks really helped to visually bring the exchange to life.\n\n⚙️WIP⚙️\n"
+      "heading": "Matching Engine to Market Simulator",
+      "body": "Once the exchange could emit events and snapshots, the project stopped being just a matching engine and started becoming a simulator. The server, UI, and actors each sit outside the orderbook, but they all depend on the same boundary: commands go in, events and snapshots come out.\n"
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/matching2market.png",
+      "alt": "",
+      "caption": "high level end to end"
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "The server is one of the shortest pieces of the project because its role is narrow. The orderbook handles matching, the exchange handles lifecycle and events, and the server handles networking. It listens for TCP connections, upgrades them to WebSockets, waits for clients to subscribe, and streams exchange output to anyone watching.\n\nTokio’s `broadcast` channel fits this nicely. Each exchange event can be sent once and received by multiple subscribers, which means the server does not need to manually track every connected client. The interesting part is what happens when a client falls behind. Since the channel is bounded, Tokio can report `RecvError::Lagged` when old messages are dropped before a receiver sees them.\n\n"
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/lagalot.png",
+      "alt": "",
+      "caption": "had to slow down message sending a bit "
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "In this project, that becomes a useful recovery point. If a client misses events, the server can send a fresh snapshot instead of expecting the UI to reconstruct the book from an incomplete event stream. Events explain what happened, but snapshots restore what is true now."
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/uimonitor.gif",
+      "alt": "",
+      "caption": "ui with some metrics and actor placed orders"
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "The final piece is actors. Actors are simulated participants that observe the book (via snapshots) and produce commands. A market maker can place bids and asks around the mid-price, noise traders can submit random orders, and takers can cross the spread with market orders. Each actor follows the same rule as an external client: it sends intent through the exchange instead of mutating the orderbook directly.\n\nThe actor model is still something I'm actively working on. I imagine a more mature version where you can configure the amount of actors as well as thier type and then observe what the book looks like under those conditions."
+    },
+    {
+      "type": "text",
+      "heading": "Takeways and Final Thoughts",
+      "body": ""
     }
   ]
 }
