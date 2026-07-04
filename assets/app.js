@@ -2,7 +2,7 @@ const SITE = {
   name: "Scriptize",
   line: "systems / rust / bots / thoughts / etc.",
   profileImage: "/images/sitepfp.jpg",
-  bio: "I like building things that make my cortisol high but my dopamine higher. bots, systems, weird interfaces, and projects that force me to learn what is actually happening underneath. I’m drawn to Rust, lower-level programming, learning about markets, and seeing people use stuff I worked on.",
+  bio: "I like building things that make my cortisol high but my dopamine higher. Bots, systems, tools, and projects that force me to learn what is actually happening underneath. I’m drawn to Rust, lower-level programming, learning about markets, and seeing people use stuff I worked on.",
   links: [
     ["github", "https://github.com/Scriptize"],
     ["email", "mailto:djb659@nyu.edu"],
