@@ -53,12 +53,12 @@
     {
       "type": "text",
       "heading": "",
-      "body": "Bids represent people willing to buy, Asks represent people willing to sell. Sorting by price is relevant because bids and asks get matched when the best (highest) bid is >= the best (lowest) ask.\n\nIts also important to note that most orderbooks operate under the idea of price-time priority. Macthes occur first at the best prices, then at the earliest arrivals."
+      "body": "Bids represent people willing to buy, Asks represent people willing to sell. Sorting by price is relevant because bids and asks get matched when the best (highest) bid is >= the best (lowest) ask.\n\nIt's also important to note that most orderbooks operate under the idea of price-time priority. Matches occur first at the best prices, then at the earliest arrivals."
     },
     {
       "type": "text",
       "heading": "Core Data Structures",
-      "body": "Bids and asks are represented using `BTreeMap<Price, Vec<OrderId>>`where each price level maps to a queue of order IDs resting at that price.\n\nThis choice fits the shape of an orderbook. Prices are not just values to look up; they form a sorted ladder. The engine constantly needs to ask questions like: what is the highest bid, what is the lowest ask, and which price levels are executable for this incoming order?\n\nA regular `HashMap` would make exact price lookups easy, but it would not preserve order. To find the best bid or ask, the engine would have to scan through all price levels. A `BTreeMap` keeps prices sorted, so the book can efficiently access the lowest ask and highest bid without searching through every level.\n\nThere is also an interesting memory-layout reason this structure is appealing. A traditional binary search tree stores one key per node, which can lead to lots of heap allocations and pointer chasing. Rust’s BTreeMap stores multiple keys per node, which better matches how modern CPUs like to read memory: in contiguous chunks. In practice, that means a B-tree can trade a few extra comparisons inside a node for fewer cache misses and better locality."
+      "body": "Bids and asks are represented using `BTreeMap<Price, Vec<OrderId>>` where each price level maps to a queue of order IDs resting at that price.\n\nThis choice fits the shape of an orderbook. Prices are not just values to look up; they form a sorted ladder. The engine constantly needs to ask questions like: what is the highest bid, what is the lowest ask, and which price levels are executable for this incoming order?\n\nA regular `HashMap` would make exact price lookups easy, but it would not preserve order. To find the best bid or ask, the engine would have to scan through all price levels. A `BTreeMap` keeps prices sorted, so the book can efficiently access the lowest ask and highest bid without searching through every level.\n\nThere is also an interesting memory-layout reason this structure is appealing. A traditional binary search tree stores one key per node, which can lead to lots of heap allocations and pointer chasing. Rust’s BTreeMap stores multiple keys per node, which better matches how modern CPUs like to read memory: in contiguous chunks. In practice, that means a B-tree can trade a few extra comparisons inside a node for fewer cache misses and better locality."
     },
     {
       "type": "image",
@@ -80,14 +80,14 @@
       "type": "list",
       "heading": "",
       "items": [
-        "getting best bid",
-        "getting best ask",
-        "stopping when bid < ask",
-        "trading at the resting price",
-        "trading at the lowest quantity",
-        "updating both orders",
-        "removing filled orders",
-        "returning results"
+        "get best bid",
+        "get best ask",
+        "stop when bid < ask",
+        "trade at the resting price",
+        "trade at the lowest quantity",
+        "update both orders",
+        "remove filled orders",
+        "return results"
       ]
     },
     {
@@ -148,7 +148,7 @@
     {
       "type": "text",
       "heading": "A Body For a Brain",
-      "body": "TThe orderbook is the brain of the system: it knows how to store orders, match them, and preserve price-time priority. But an exchange needs more than a brain. It needs a body around it: something that receives commands, assigns order IDs, validates requests, emits events, and exposes the book to the outside world.\n\n"
+      "body": "The orderbook is the brain of the system: it knows how to store orders, match them, and preserve price-time priority. But an exchange needs more than a brain. It needs a body around it: something that receives commands, assigns order IDs, validates requests, emits events, and exposes the book to the outside world.\n\n"
     },
     {
       "type": "image",
@@ -251,11 +251,11 @@
     {
       "type": "text",
       "heading": "",
-      "body": "The final piece is actors. Actors are simulated participants that observe the book (via snapshots) and produce commands. A market maker can place bids and asks around the mid-price, noise traders can submit random orders, and takers can cross the spread with market orders. Each actor follows the same rule as an external client: it sends intent through the exchange instead of mutating the orderbook directly.\n\nThe actor model is still something I'm actively working on. I imagine a more mature version where you can configure the amount of actors as well as thier type and then observe what the book looks like under those conditions."
+      "body": "The final piece is actors. Actors are simulated participants that observe the book (via snapshots) and produce commands. A market maker can place bids and asks around the mid-price, noise traders can submit random orders, and takers can cross the spread with market orders. Each actor follows the same rule as an external client: it sends intent through the exchange instead of mutating the orderbook directly.\n\nThe actor model is still something I'm actively working on. I imagine a more mature version where you can configure the number of actors as well as their type and then observe what the book looks like under those conditions."
     },
     {
       "type": "text",
-      "heading": "Takeways and Final Thoughts",
+      "heading": "Takeaways and Final Thoughts",
       "body": "The biggest lesson from this project was not just how to build an orderbook. It was how much cleaner a system becomes when each layer owns one concern and exposes a narrow boundary to the rest of the world.\n\nThe orderbook should not care about WebSockets, actors, dashboards, or simulation settings. It should accept commands, update state, and produce results. The exchange can handle lifecycle and events. The server can handle networking. The UI can observe snapshots. Once those boundaries were clearer, correctness, performance, and visibility stopped feeling like competing goals. They became separate things I could reason about without dragging the entire project into every change.\n\n"
     },
     {
