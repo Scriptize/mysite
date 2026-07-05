@@ -256,7 +256,7 @@ function homePage() {
       </div>
     </section>
 
-    ${sectionList("thoughts", "coming soon / 404", thoughts, "thoughts incoming")}
+    ${sectionList("thoughts", "whats on my mind?", thoughts, "thoughts incoming")}
     ${sectionList("work", "experience + creds", work, "work section is empty")}
   `);
 }

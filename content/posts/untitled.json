@@ -1,0 +1,22 @@
+{
+  "title": "Untitled",
+  "slug": "untitled",
+  "collection": "posts",
+  "type": "post",
+  "date": "2026-07-05",
+  "status": "draft",
+  "summary": "",
+  "tags": [],
+  "icon": "/images/post-icons/default.svg",
+  "heroImage": "",
+  "placements": [],
+  "featured": false,
+  "badge": "",
+  "sections": [
+    {
+      "type": "text",
+      "heading": "",
+      "body": ""
+    }
+  ]
+}
