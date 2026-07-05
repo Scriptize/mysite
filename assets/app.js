@@ -249,10 +249,10 @@ function homePage() {
     <section class="section">
       <div class="section-head"><span>status</span><h2>now-ish</h2></div>
       <div class="status-grid">
-        <p><span>building</span>orderbook / exchange sim</p>
-        <p><span>reading</span>thread dumps(?) stack trace unwinding and instruction pointers</p>
-        <p><span>writing</span>old project retrospectives</p>
-        <p><span>vibe</span>ai workshops are so boring</p>
+        <p><span>building</span>actors for orderbook sim</p>
+        <p><span>reading</span>Tokio interals for open source</p>
+        <p><span>writing</span>nothing rn</p>
+        <p><span>vibe</span>AI workshops are kinda boring</p>
       </div>
     </section>
 
