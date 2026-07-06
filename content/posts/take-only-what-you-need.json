@@ -4,8 +4,8 @@
   "collection": "posts",
   "type": "post",
   "date": "2026-06-20",
-  "status": "draft",
-  "summary": "How the Nintendo DS handled games 100's of times larger than its 4 MB RAM.",
+  "status": "wip",
+  "summary": "Modern systems load code when you need it. The Nintendo DS had to do the loading itself.",
   "tags": [
     "nds",
     "ram",
@@ -19,12 +19,77 @@
     "thoughts"
   ],
   "featured": false,
-  "badge": "draft",
+  "badge": "wip",
   "sections": [
     {
       "type": "text",
-      "heading": "Coming Soon",
-      "body": "Pokémon Black 2 is hundreds of megabytes.\n\nThe Nintendo DS has 4 MB of RAM.\n\nSomehow, that works.\n\nWhy?"
+      "heading": "I'm Not Reading All of That",
+      "body": "Pokémon Black 2 is hundreds of megabytes. \n\nThe Nintendo DS has 4 MB of RAM. \n\nSomehow, that works. Why?\n\n"
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/saboread.gif",
+      "alt": "",
+      "caption": ""
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "The answer is pretty simple; the DS doesn't try to read the entire cartridge at once. If this was obvious to you, great! This didn't click for me until pretty recently. But this principle isn't unqiue to the DS. Almost all modern systems do the same.\n\n"
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/loadmem.png",
+      "alt": "",
+      "caption": ""
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "Imagine your 150 GB Triple-A games: Red Dead Redemption 2, Baldur's Gate 3, Destiny 2. Huge titles with open worlds, and although they still gap standard 16GB - 32GB RAM sizes by 5-10x, your computer is still able to manage. 150 GB isn't sitting in your RAM. Why would it? The same goes for your browser and all the other software on your PC. \n\nWhat do each of these applications have in common? They're all constantly asking the same question:\n\n`What do I actually need right now?`\n\n"
+    },
+    {
+      "type": "text",
+      "heading": "The Modern Machine",
+      "body": "Like most people, I don't often consider how the computer decides to take the memory it needs for every process. But what's interesting to me is the amount of machinery behind it."
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/app2ram.png",
+      "alt": "",
+      "caption": "would you look at that 😮"
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "The OS does a lot of heavy lifting we take for granted. It makes sure each process think it owns its own contiguous chunk of memory starting at address 0. And page tables and the MMU work together to ensure physical addresses and virtual addresses are translated back and forth properly between the RAM. And even then, lots of this are abstracted away by the OS and kernel.\n\nIn C or C++ or Rust you'd do:\n\n`malloc(...)`\n\n`int *p new int(5)`\n\n`let x = Box::new(5)`\n\nAnd memory just \"appears\", but the Kernel, OS, MMU and related infrastructure is what mke this illusion possible.\n"
+    },
+    {
+      "type": "text",
+      "heading": "Nintendo, Where's my Super Suit?",
+      "body": "Now strip all of that away. No latest i9 or i7, its ARM 9 and ARM 7. Your 16GB RAM just got 8,192 times smaller. No disk, unless you want to count your cartridge that may or may not be present. No OS, no pages, no page tables, no kernel, no MMU. No modern infrastructure. Just [RISC](https://en.wikipedia.org/wiki/Reduced_instruction_set_computer) processors and raw memory."
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/wimss.gif",
+      "alt": "",
+      "caption": ""
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "Yet, Mario still deafeats Bowser, Cooking Mama sill completes her dish, and Pokémon still enter battle. Even with the dispairity in memory management infrastructure between recent computers and handheld console's in the 2000's, theres no doubt there were mechanisms in place for ad hoc release and retrieval of executable code in the past."
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/dsspecs.png",
+      "alt": "",
+      "caption": "yeah mine is prebuilt, ima upgrade it soon tho"
+    },
+    {
+      "type": "text",
+      "heading": "Enter Overlays:",
+      "body": "Here's I'll talk about the mechanism the DS uses to load executable binaries as needed into active memory."
     }
   ]
 }
