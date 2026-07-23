@@ -17,9 +17,10 @@
   "heroImage": "",
   "placements": [
     "posts",
-    "thoughts"
+    "thoughts",
+    "features"
   ],
-  "featured": false,
+  "featured": true,
   "badge": "",
   "sections": [
     {

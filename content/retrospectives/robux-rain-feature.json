@@ -14,11 +14,10 @@
   "icon": "/images/post-icons/robux-rain.svg",
   "heroImage": "",
   "placements": [
-    "features",
     "posts",
     "retrospectives"
   ],
-  "featured": true,
+  "featured": false,
   "badge": "",
   "sections": [
     {

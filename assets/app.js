@@ -222,17 +222,220 @@ function sectionList(label, title, items, empty = "nothing here yet") {
   `;
 }
 
-function homePage() {
-  const latest = [...(content.all || [])]
-    .filter(item => isPublicItem(item))
-    .filter(item => item.collection !== "work")
-    .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
-    .slice(0, 5);
+const EXPLORE_SECTIONS = [
+  {
+    collection: "posts",
+    title: "Posts",
+    description: "Long-form writing about engineering, learning, and life.",
+    icon: "✎",
+  },
+  {
+    collection: "projects",
+    title: "Projects",
+    description: "Things I’ve built, reverse-engineered, and experimented with.",
+    icon: "⌘",
+  },
+  {
+    collection: "retrospectives",
+    title: "Retrospectives",
+    description: "Lessons from older projects and the decisions behind them.",
+    icon: "↺",
+  },
+  {
+    collection: "thoughts",
+    title: "Thoughts",
+    description: "Short notes, observations, and unfinished ideas.",
+    icon: "…",
+  },
+  {
+    collection: "work",
+    title: "Work",
+    description: "Experience, internships, and technical contributions.",
+    icon: "▣",
+  },
+  {
+    collection: "features",
+    title: "Features",
+    description: "A curated collection of writing worth starting with.",
+    icon: "★",
+  },
+];
 
-  const featured = sectionItems("features").slice(0, 3);
+function renderExploreSection() {
+  return `
+    <section class="section explore-section" aria-labelledby="explore-heading">
+      <div class="section-head">
+        <span>directory</span>
+        <h2 id="explore-heading">explore</h2>
+      </div>
+
+      <div class="explore-grid">
+        ${EXPLORE_SECTIONS.map(section => {
+          const count =
+            section.collection === "features"
+              ? getFeaturedItems().length
+              : sectionItems(section.collection).length;
+
+          return `
+            <a
+              class="explore-card"
+              href="/${section.collection}/"
+              data-link
+            >
+              <div class="explore-card-top">
+                <span class="explore-card-icon" aria-hidden="true">
+                  ${section.icon}
+                </span>
+
+                <span class="explore-card-arrow" aria-hidden="true">
+                  ↗
+                </span>
+              </div>
+
+              <div class="explore-card-copy">
+                <h3>${escapeHtml(section.title)}</h3>
+                <p>${escapeHtml(section.description)}</p>
+              </div>
+
+              <div class="explore-card-footer">
+                <span class="explore-card-count">
+                  ${count} ${count === 1 ? "entry" : "entries"}
+                </span>
+
+                <span class="explore-card-path">
+                  /${escapeHtml(section.collection)}
+                </span>
+              </div>
+            </a>
+          `;
+        }).join("")}
+      </div>
+    </section>
+  `;
+}
+
+
+function renderFeaturedCarousel(items) {
+  if (!items.length) {
+    return "";
+  }
+
+  return `
+    <section
+      class="section featured-carousel-section"
+      aria-labelledby="featured-carousel-heading"
+    >
+      <div class="section-head">
+        <span>features</span>
+        <h2 id="featured-carousel-heading">featured writing</h2>
+      </div>
+
+      <div
+        class="featured-carousel"
+        data-featured-carousel
+        aria-label="Featured articles"
+        aria-roledescription="carousel"
+      >
+        <div class="featured-carousel-window">
+          ${items.map((item, index) => `
+            <article
+              class="featured-slide${index === 0 ? " active" : ""}"
+              data-featured-slide
+              aria-hidden="${index === 0 ? "false" : "true"}"
+            >
+              <a
+                class="featured-slide-link"
+                href="${postUrl(item)}"
+                data-link
+                tabindex="${index === 0 ? "0" : "-1"}"
+              >
+                <div class="featured-slide-copy">
+                  <p class="small prompt">
+                    /${escapeHtml(item.collection)}/${escapeHtml(item.slug)}
+                  </p>
+
+                  <h3>${escapeHtml(item.title)}</h3>
+
+                  <p class="featured-slide-summary">
+                    ${escapeHtml(item.summary || "")}
+                  </p>
+
+                  <span class="featured-slide-action">
+                    read article →
+                  </span>
+                </div>
+
+                <div class="featured-slide-media">
+                  <img
+                    src="${escapeHtml(getThumbnailSrc(item))}"
+                    alt=""
+                    loading="${index === 0 ? "eager" : "lazy"}"
+                  >
+                </div>
+              </a>
+            </article>
+          `).join("")}
+        </div>
+
+        ${items.length > 1 ? `
+          <div class="featured-carousel-controls">
+            <button
+              type="button"
+              data-carousel-previous
+              aria-label="Previous featured article"
+            >
+              ←
+            </button>
+
+            <div class="featured-carousel-dots">
+              ${items.map((item, index) => `
+                <button
+                  type="button"
+                  class="featured-carousel-dot${index === 0 ? " active" : ""}"
+                  data-carousel-dot="${index}"
+                  aria-label="Show ${escapeHtml(item.title)}"
+                  aria-current="${index === 0 ? "true" : "false"}"
+                ></button>
+              `).join("")}
+            </div>
+
+            <button
+              type="button"
+              data-carousel-next
+              aria-label="Next featured article"
+            >
+              →
+            </button>
+          </div>
+        ` : ""}
+      </div>
+    </section>
+  `;
+}
+
+function homePage() {
+
+
+  const featured = getFeaturedItems();
   const projects = sectionItems("projects").slice(0, 4);
   const thoughts = sectionItems("thoughts");
   const work = sectionItems("work").slice(0, 4);
+  
+  const featuredKeys = new Set(
+    featured.map(item => `${item.collection}/${item.slug}`)
+  );
+
+  const latest = [...(content.all || [])]
+    .filter(item => isPublicItem(item))
+    .filter(item => item.collection !== "work")
+    .filter(item => {
+      const key = `${item.collection}/${item.slug}`;
+      return !featuredKeys.has(key);
+    })
+    .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
+    .slice(0, 3);
+
+  
 
   return layout(`
     ${identityStrip()}
@@ -242,22 +445,18 @@ function homePage() {
       <p>A minimal archive for blog posts, current builds, old-code retrospectives, and small notes from whatever I’m trying to understand next.</p>
     </section>
 
+    ${renderFeaturedCarousel(featured)}
+
     ${sectionList("recent", "main writing", latest)}
-    ${sectionList("features", "featured dig-ins", featured, "feature slot is empty")}
-    ${sectionList("projects", "current stuff", projects, "no active projects yet")}
+    ${renderExploreSection()}
 
-    <section class="section">
-      <div class="section-head"><span>status</span><h2>now-ish</h2></div>
-      <div class="status-grid">
-        <p><span>building</span>actors for orderbook sim</p>
-        <p><span>reading</span>Tokio interals for open source</p>
-        <p><span>writing</span>nothing rn</p>
-        <p><span>vibe</span>AI workshops are kinda boring</p>
-      </div>
+    <section class="closing-quote">
+      <blockquote>
+          “There are far, far better things ahead than any we leave behind.”
+      </blockquote>
+
+      <p>— C.S. Lewis</p>
     </section>
-
-    ${sectionList("thoughts", "whats on my mind?", thoughts, "thoughts incoming")}
-    ${sectionList("work", "experience + creds", work, "work section is empty")}
   `);
 }
 
@@ -377,6 +576,106 @@ function notFoundPage() {
   `);
 }
 
+function attachFeaturedCarousel() {
+  const carousel = $("[data-featured-carousel]");
+  if (!carousel) return;
+
+  const slides = [...carousel.querySelectorAll("[data-featured-slide]")];
+  const dots = [...carousel.querySelectorAll("[data-carousel-dot]")];
+  const previous = carousel.querySelector("[data-carousel-previous]");
+  const next = carousel.querySelector("[data-carousel-next]");
+
+  if (slides.length < 2) return;
+
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+
+  let currentIndex = 0;
+  let intervalId = null;
+
+  function showSlide(index) {
+    currentIndex = (index + slides.length) % slides.length;
+
+    slides.forEach((slide, slideIndex) => {
+      const active = slideIndex === currentIndex;
+      const link = slide.querySelector("a");
+
+      slide.classList.toggle("active", active);
+      slide.setAttribute("aria-hidden", String(!active));
+
+      if (link) {
+        link.tabIndex = active ? 0 : -1;
+      }
+    });
+
+    dots.forEach((dot, dotIndex) => {
+      const active = dotIndex === currentIndex;
+
+      dot.classList.toggle("active", active);
+      dot.setAttribute("aria-current", String(active));
+    });
+  }
+
+  function stopAutoplay() {
+    if (intervalId !== null) {
+      window.clearInterval(intervalId);
+      intervalId = null;
+    }
+  }
+
+  function startAutoplay() {
+    if (reduceMotion) return;
+
+    stopAutoplay();
+
+    intervalId = window.setInterval(() => {
+      showSlide(currentIndex + 1);
+    }, 6500);
+  }
+
+  previous?.addEventListener("click", () => {
+    showSlide(currentIndex - 1);
+    startAutoplay();
+  });
+
+  next?.addEventListener("click", () => {
+    showSlide(currentIndex + 1);
+    startAutoplay();
+  });
+
+  dots.forEach(dot => {
+    dot.addEventListener("click", () => {
+      showSlide(Number(dot.dataset.carouselDot));
+      startAutoplay();
+    });
+  });
+
+  carousel.addEventListener("mouseenter", stopAutoplay);
+  carousel.addEventListener("mouseleave", startAutoplay);
+  carousel.addEventListener("focusin", stopAutoplay);
+
+  carousel.addEventListener("focusout", event => {
+    if (!carousel.contains(event.relatedTarget)) {
+      startAutoplay();
+    }
+  });
+
+  carousel.addEventListener("keydown", event => {
+    if (event.key === "ArrowLeft") {
+      showSlide(currentIndex - 1);
+      startAutoplay();
+    }
+
+    if (event.key === "ArrowRight") {
+      showSlide(currentIndex + 1);
+      startAutoplay();
+    }
+  });
+
+  startAutoplay();
+}
+
 function attachSearch(collection) {
   const input = $("#search");
   const listing = $("#listing");
@@ -406,6 +705,9 @@ function render() {
   document.getElementById("app").innerHTML = html;
   if (window.Prism) {
     window.Prism.highlightAll();
+  }
+  if (collection === "home") {
+    attachFeaturedCarousel();
   }
   if (COLLECTIONS[collection] && !slug) attachSearch(collection);
 }
