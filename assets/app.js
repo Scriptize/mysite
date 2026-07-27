@@ -447,7 +447,7 @@ function homePage() {
 
     ${renderFeaturedCarousel(featured)}
 
-    ${sectionList("recent", "main writing", latest)}
+    ${sectionList("main", "recent writing", latest)}
     ${renderExploreSection()}
 
     <section class="closing-quote">
