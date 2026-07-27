@@ -1032,3 +1032,17 @@ html {
     letter-spacing: 0.12em;
     text-transform: uppercase;
 }
+
+.identity-photo {
+  display: block;
+  width: 200px;
+  max-width: 100%;
+  height: auto;
+}
+
+.identity-caption {
+  margin: 8px 0 0;
+  color: var(--faint);
+  font-size: 11px;
+  line-height: 1.4;
+}

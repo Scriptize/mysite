@@ -181,8 +181,13 @@ function layout(inner) {
 function identityStrip() {
   return `
     <section class="identity-strip">
-      <div class="identity-photo">
-        <img src="${SITE.profileImage}" alt="${SITE.name}" />
+      <div class="identity-photo-frame">
+        <img
+          class="identity-photo"
+          src="${SITE.profileImage}"
+          alt="Darren standing beside a black goat"
+        >
+        <p class="identity-caption">2 black goats</p>
       </div>
       <div class="identity-copy">
         <p class="small prompt">~/profile</p>
