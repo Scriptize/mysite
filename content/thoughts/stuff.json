@@ -3,7 +3,7 @@
   "slug": "stuff",
   "collection": "thoughts",
   "type": "thought",
-  "date": "2026-08-06",
+  "date": "2026-07-01",
   "status": "forever wip",
   "summary": "miscellaneous notes on blaylock.io",
   "tags": [],
@@ -15,6 +15,11 @@
   "featured": false,
   "badge": "wip",
   "sections": [
+    {
+      "type": "text",
+      "heading": "Look!",
+      "body": ""
+    },
     {
       "type": "image",
       "src": "/images/posts/donutyum.jpg",
