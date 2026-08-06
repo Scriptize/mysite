@@ -3,8 +3,8 @@
   "slug": "tokio-taskdump",
   "collection": "projects",
   "type": "project",
-  "date": "2026-05-18",
-  "status": "researching",
+  "date": "2026-08-03",
+  "status": "gathering",
   "summary": "A look at open-source Rust, Tokio, and a contribution to lay the groundwork for better runtime observability",
   "tags": [
     "rust",
@@ -18,7 +18,7 @@
     "posts"
   ],
   "featured": false,
-  "badge": "draft",
+  "badge": "wip",
   "sections": [
     {
       "type": "text",
@@ -58,7 +58,7 @@
     {
       "type": "text",
       "heading": "You Don't Have to Stop The World",
-      "body": "On March of this year, [Russell Cohen](https://rcoh.me/), a senior software engineer at AWS opened an [issue](https://github.com/tokio-rs/tokio/issues/7975) on the Tokio repo which pointed out that the current implementation of task dumps relies on `backtrace::trace` which acquires a [global lock.](https://docs.rs/backtrace/0.3.76/src/backtrace/backtrace/mod.rs.html#52) \n\nAs best practice, you typically want to reduce the resources your lock acquires to what's necessary as well as the time it's held to ensure that the overhead of acquisiton, use, and release isnt punching your performance in the gut. "
+      "body": "On March of this year, [Russell Cohen](https://rcoh.me/), a senior software engineer at AWS opened an [issue](https://github.com/tokio-rs/tokio/issues/7975) on the Tokio repo which pointed out that the current implementation of task dumps relies on `backtrace::trace` which acquires a [global lock.](https://docs.rs/backtrace/0.3.76/src/backtrace/backtrace/mod.rs.html#52) \n\nAs a general rule, you typically want to reduce the amount of shared state a lock acquires to what's necessary, espeicially if you're dealing with a global lock because operations that could otherwise take place independently end up punching your performance in the gut. "
     },
     {
       "type": "image",
@@ -70,12 +70,17 @@
       "type": "image",
       "src": "/images/posts/globallock.png",
       "alt": "",
-      "caption": "no locks, no symbolizing, no friction"
+      "caption": "capture now, symbolize later"
     },
     {
       "type": "text",
       "heading": "",
-      "body": "However, in this case it wasn't as if Tokio was intentially locking the entire runtime before walking a stack. The issue was that every capture passed through this globally sync'd backtrace API turning an operation that should be local into a shared, process-wide contention. \n\nThe goal here was to update the task dump code to rely on frame-pointer unwinding and lazy symbolization so that not only performance could be bought back, but that any further processing that would otherwise incur runtime costs could be handled as the caller pleased"
+      "body": "To give some clarity, Tokio isn't freezing the entire runtime before walking a stack. It isn't like a JVM stop-the-world pause. The issue is a bit more subtler in that every capture passed through this globally sync'd backtrace API turned an operation that should be local into a shared, process-wide contention. \n\nThe goal here was to update the task dump code to rely on frame-pointer unwinding and lazy symbolization so that not only performance could be bought back, but that any further processing that would otherwise incur runtime costs could be handled as the caller pleased"
+    },
+    {
+      "type": "text",
+      "heading": "Libunwind",
+      "body": "Here I'll give some implementation details on how we used a C API to create a global-lock-free stack walk"
     }
   ]
 }
