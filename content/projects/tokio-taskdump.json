@@ -62,12 +62,6 @@
     },
     {
       "type": "image",
-      "src": "/images/posts/example.png",
-      "alt": "",
-      "caption": ""
-    },
-    {
-      "type": "image",
       "src": "/images/posts/globallock.png",
       "alt": "",
       "caption": "capture now, symbolize later"
