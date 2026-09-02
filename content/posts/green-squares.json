@@ -1,0 +1,101 @@
+{
+  "title": "Green Squares & Third Order Effects",
+  "slug": "green-squares",
+  "collection": "posts",
+  "type": "post",
+  "date": "2026-09-02",
+  "status": "draft",
+  "summary": "Exploring a cause whose third-order effect is probably employment",
+  "tags": [],
+  "icon": "/images/post-icons/default.svg",
+  "heroImage": "",
+  "placements": [
+    "posts",
+    "retrospectives",
+    "thoughts"
+  ],
+  "featured": false,
+  "badge": "new",
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Background",
+      "body": "Around Fall of 2023, many of my peers in the computer science space began ramping up interview preperation and even begun starting online assesments for early college programs or summer internships.\n\nI even remember one time in particular where a friend of mine would hop on a call and screenshare as we struggled to tackle an online assesment together. He's working fulltime now at the same company but its funny to look back at how he made it through and how much we struggled then."
+    },
+    {
+      "type": "text",
+      "heading": "DSA + LC",
+      "body": "As we became more familiar with the standard engineering interview process, it became more clear that leetcode was a significant part; especially at the begining and end.\n\n"
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/greenbean.png",
+      "alt": "",
+      "caption": "greeeeeeen beeeean"
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "around this same time in October, a friend of a friend named Eric joined a coding/tech related gc and he was interested in competetive programming and leetcode and was really good at it. \n\nWe were all sophomores still starting to get a better grasp of data structures before AI had gotten solid enough for it, but he seemed comfortable with advanced graph problems and dyanamic programming and med/hard-tagged questions in a way that seemed like inaccessibile magic at the time.\n\n\n\n"
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/kfpt.gif",
+      "alt": "",
+      "caption": ""
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "But he'd start to explain stuff, sometimes we'd sit in call as a group and grind some questions. You'd see the green squares on his leetcode profile and start to think, \"this is how he got good.\" \n\nBut I think what's more interesting is the overall effect on the people involved. Sometimes the biggest effect another person can have on your ambitions is not motivating, teaching you, or opening a door for you. Its making the hard stuff seem more attemptable.\n\nAnd when people `not only` feel but `see` something is attemptable or more workable toward. It becomes more tangible\n"
+    },
+    {
+      "type": "text",
+      "heading": "The DP Demon",
+      "body": "This year was the first faliure at gaining the opportunity to work at a tech company. I don't remember consciously deciding that because Eric could do these problems, I could too. That's probably giving the process too much intentionality. But sometime after failing that interview, doing LeetCode every day stopped sounding ridiculous.\n\nIt was also sometime after grinding out drynamic programming problems that I changed from thinking that \"some people are just cracked\" to \"there are just ways on thinking about things that I havent been exposed to yet\"\n\n\n\n"
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/me.gif",
+      "alt": "",
+      "caption": ""
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "If you told me I'd be able to comfortably do medium/hard dp problems maybe less than half a year before I wouldn't believe you. But now they feel like some of the easiest types of problems to me just based on how they a structured."
+    },
+    {
+      "type": "text",
+      "heading": "Third Order Effects",
+      "body": "I'm not sure if theres a clear cut concrete lesson here. It's definitely not \"surround yourself with ambitious people\" or \"we saw someone work hard so we worked hard too\". These circumstances were natural and unintentional.\n\nBut I think one interesting insight here is that when Eric ended up accepted his offers to top tech companies and AI labs, we were unsurprised. There wasn't a \"your hard work paid off\" moment.\n\n"
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/bigleagues.webp",
+      "alt": "",
+      "caption": ""
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "I think the exposure to someone being unsually good at something changes the percieved difficulty of that thing for everyone around.\n\nThe best way to put it is that our sense of what's attainable is partially calibrated by the people close enough for us to watch becoming capable\n"
+    },
+    {
+      "type": "text",
+      "heading": "Final Order Stuff",
+      "body": "And so looking back, I think the bigger picture is that through hopping on call, screen sharing assessments, and sending snippets back and forth, many of my peers who are familiar with this story can probably trace some part of their own growth back to each other.\n\nEric getting really good at LeetCode didn't get any of us a job. E̶v̶e̶n̶ ̶h̶i̶m̶ ̶h̶e̶l̶p̶i̶n̶g̶ ̶u̶s̶ ̶w̶i̶t̶h̶ ̶p̶r̶o̶b̶l̶e̶m̶s̶ ̶d̶i̶d̶n̶'̶t̶ ̶g̶e̶t̶ ̶u̶s̶ ̶j̶o̶b̶s̶.̶ But it made getting good at these things seem normal enough to attempt, and eventually some of us became the people hopping in calls and explaining problems to someone else.\n\nI think that's where the third-order effects start getting hard to keep track of.\n\n"
+    },
+    {
+      "type": "image",
+      "src": "/images/posts/employmentw.png",
+      "alt": "",
+      "caption": "\"the employment whisperer\""
+    },
+    {
+      "type": "text",
+      "heading": "",
+      "body": "Someone gets good at something. The people around them get to watch how. What looked inaccessible becomes a little more ordinary. Some of those people try it themselves, get pretty good, and unknowingly become the same kind of reference point for somebody else.\n\n"
+    }
+  ]
+}
