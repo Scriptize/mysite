@@ -1,0 +1,36 @@
+{
+  "title": "With Your Hands",
+  "slug": "with-your-hands",
+  "collection": "posts",
+  "type": "post",
+  "date": "2026-09-06",
+  "status": "thought",
+  "summary": "Thoughts on how stuff sticks better when u use your hands",
+  "tags": [
+    "hand",
+    "write",
+    "draw",
+    "code",
+    "mechanics"
+  ],
+  "icon": "/images/post-icons/default.svg",
+  "heroImage": "",
+  "placements": [
+    "posts",
+    "thoughts"
+  ],
+  "featured": false,
+  "badge": "new",
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Good Mechanics",
+      "body": "I was reminded again this past week about how its sometimes (well mostly) better to write with pen and paper than to use a laptop whether its taking notes or even drawing on a tablet with some wireless stylus/apple pencil etc.\n\nA professor in my creative writing class mentioned something along these lines and I kind of feel the same about it and have a couple of surrounding or corollarish thoughts. \n\nI think whatever mechanism enables you to better retain info from handwriting notes is similar to that of using a keyboard to type code. This is part of the AI conversation, but its not just coding languages themseleves but related activities that you get exposure to by \"learning through actually typing\" like some algorithims.\n\nI remember working on a whiteboard problem with my brother and he asked how I'd pull together the breadth-first-search algo so quickly and somehow as I thought about drawing out the small pictures and diagram representative on the whiteboard, even thoough it wasnt written code my understanding was derived from repetetively typing out some form of the algorithim."
+    },
+    {
+      "type": "text",
+      "heading": "takeaway(?)",
+      "body": "I think I can still comfortably type out problems I've seen the shape of before.\n\nAt some point, though, I stopped handwriting my notes. Maybe improving how I learn isn’t only about finding better information or better tools. Maybe it’s also about returning to a better mechanism.\n\nWith my hands."
+    }
+  ]
+}
