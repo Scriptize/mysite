@@ -442,7 +442,7 @@ function homePage() {
     <section class="hero">
       <p class="prompt">~/index</p>
       <h1>posts first. projects second. everything else is evidence.</h1>
-      <p>A minimal archive for blog posts, current builds, old-code retrospectives, and small notes from whatever I’m trying to understand next.</p>
+      <p>Things I’ve written, things I’ve built, and things I understand a little better after trying to explain them here.</p>
     </section>
 
     ${renderFeaturedCarousel(featured)}
